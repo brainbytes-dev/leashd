@@ -1,0 +1,53 @@
+{
+  "name": "@repo/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "dev": "expo start",
+    "build": "echo 'Mobile build is via expo run:ios or expo run:android'",
+    "lint": "echo 'Lint configuration pending - React Native tooling setup'",
+    "typecheck": "echo 'Typecheck skipped for mobile app (React Native types incomplete)'",
+    "android": "expo run:android",
+    "ios": "expo run:ios"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@react-native-async-storage/async-storage": "^2.1.0",
+    "@repo/nativewindui": "workspace:*",
+    "@sentry/react-native": "^8.4.0",
+    "better-auth": "^1.0.0",
+    "burnt": "^0.13.0",
+    "clsx": "^2.1.0",
+    "expo": "latest",
+    "expo-haptics": "~14.1.0",
+    "expo-router": "latest",
+    "expo-status-bar": "latest",
+    "posthog-react-native": "^4.37.3",
+    "react": "19.2.4",
+    "react-hook-form": "^7.71.2",
+    "react-native": "0.83.2",
+    "react-native-keyboard-controller": "^1.16.0",
+    "react-native-purchases": "^9.12.0",
+    "react-native-safe-area-context": "^5.4.0",
+    "react-native-screens": "^4.10.0",
+    "tailwind-merge": "^3.0.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@babel/core": "latest",
+    "@expo/metro-runtime": "latest",
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "^19",
+    "@types/react-native": "latest",
+    "babel-plugin-module-resolver": "latest",
+    "babel-preset-expo": "latest",
+    "eslint": "^9",
+    "nativewind": "latest",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "@expo/metro-runtime": "5.0.2"
+  }
+}

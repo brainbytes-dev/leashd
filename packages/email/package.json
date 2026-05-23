@@ -1,0 +1,27 @@
+{
+  "name": "@repo/email",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./welcome": "./src/welcome.tsx",
+    "./payment-failed": "./src/payment-failed.tsx",
+    "./subscription-canceled": "./src/subscription-canceled.tsx"
+  },
+  "scripts": {
+    "dev": "email dev --dir src --port 3333",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-email/components": "^1.0.9",
+    "@react-email/preview-server": "^5.2.9",
+    "react": "19.2.4"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "^19",
+    "react-email": "^5.2.9",
+    "typescript": "^5"
+  }
+}
