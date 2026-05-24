@@ -31,7 +31,7 @@ export default function PrivacyPage() {
 
       <Note>
         <Strong>Operator note:</Strong> leashd is operated by HR Online
-        Consulting LLC (DBA leashd) under the brand &ldquo;BrainBytes
+        Consulting LLC (DBA BrainBytes Studio) under the brand &ldquo;BrainBytes
         Studio.&rdquo; See Section 1.
       </Note>
 

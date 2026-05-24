@@ -20,7 +20,7 @@ export default function TermsPage() {
     <LegalPage title="Terms of Service" updated="May 23, 2026">
       <P>
         These Terms govern your use of leashd (the &ldquo;Services&rdquo;),
-        operated by HR Online Consulting LLC (DBA leashd) (&ldquo;we,&rdquo;
+        operated by HR Online Consulting LLC (DBA BrainBytes Studio) (&ldquo;we,&rdquo;
         &ldquo;us,&rdquo; &ldquo;our&rdquo;). By creating an account or using the
         Services you agree to these Terms.
       </P>

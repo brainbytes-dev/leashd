@@ -2,7 +2,7 @@
 
 _Last updated: May 23, 2026_
 
-These Terms govern your use of leashd (the "Services"), operated by HR Online Consulting LLC (DBA leashd) ("we," "us," "our"). By creating an account or using the Services you agree to these Terms.
+These Terms govern your use of leashd (the "Services"), operated by HR Online Consulting LLC (DBA BrainBytes Studio) ("we," "us," "our"). By creating an account or using the Services you agree to these Terms.
 
 ## 1. The Services
 
@@ -63,7 +63,7 @@ We may update these Terms as the Services evolve. The "Last updated" date reflec
 
 ## 11. Contact
 
-HR Online Consulting LLC (DBA leashd)
+HR Online Consulting LLC (DBA BrainBytes Studio)
 550 Kings Mountain
 Kings Mountain, NC 28086, United States
 Email: support@leashd.dev

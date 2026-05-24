@@ -4,7 +4,7 @@ _Last updated: May 23, 2026_
 
 How leashd handles personal data. Short version: leashd is a non-custodial spend-governance layer for AI agents. It never holds your funds or private keys. We process your account data, the connection settings you configure for your own payment rails, the spending policies you define, and the audit logs leashd generates so you can see what your agents did.
 
-> **Operator note:** leashd is operated by HR Online Consulting LLC (DBA leashd) under the brand "BrainBytes Studio." See Section 1.
+> **Operator note:** leashd is operated by HR Online Consulting LLC (DBA BrainBytes Studio) under the brand "BrainBytes Studio." See Section 1.
 
 ## Table of Contents
 
@@ -34,7 +34,7 @@ How leashd handles personal data. Short version: leashd is a non-custodial spend
 
 ## 1. Controller (Operator)
 
-HR Online Consulting LLC (DBA leashd)
+HR Online Consulting LLC (DBA BrainBytes Studio)
 550 Kings Mountain
 Kings Mountain, NC 28086, United States
 Email: support@leashd.dev
@@ -197,7 +197,7 @@ We update this Policy as the service evolves. The "Last updated" date reflects t
 
 For any privacy question, or to exercise any right described above:
 
-HR Online Consulting LLC (DBA leashd)
+HR Online Consulting LLC (DBA BrainBytes Studio)
 550 Kings Mountain
 Kings Mountain, NC 28086, United States
 Email: support@leashd.dev
