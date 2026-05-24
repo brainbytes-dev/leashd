@@ -88,4 +88,4 @@ The agent then sees `pay`, `check_policy`, and `get_budget`.
 
 ## License
 
-Apache-2.0.
+AGPL-3.0.
