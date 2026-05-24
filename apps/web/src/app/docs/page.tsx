@@ -91,6 +91,72 @@ export default function DocsPage() {
 
       <section className="flex flex-col gap-4">
         <h2 className="font-mono text-lg font-semibold tracking-tight">
+          How it works
+        </h2>
+        <p className="font-sans text-sm leading-relaxed text-muted-foreground">
+          Think of {BRAND} as a bouncer with a rulebook standing between your AI
+          agent and your money. The agent wants to pay, the bouncer checks the
+          rulebook (budget left? recipient allowed? under the limit? kill-switch
+          off?), then lets it through or blocks it, and writes every decision in
+          a logbook. The bouncer (<span className="font-mono text-foreground">leashd</span>)
+          runs on your machine and holds your wallet connection locally. The
+          rulebook and logbook live in this dashboard.
+        </p>
+        <p className="font-sans text-sm leading-relaxed text-muted-foreground">
+          A concrete run: your research agent wants to pay 50 sat for an API
+          call.
+        </p>
+        <ol className="flex list-decimal flex-col gap-2 pl-5 font-sans text-sm leading-relaxed text-muted-foreground">
+          <li>
+            The agent never gets your wallet. It gets a policy-gated{" "}
+            <span className="font-mono text-foreground">pay</span> tool over MCP
+            that points at <span className="font-mono text-foreground">leashd</span>.
+          </li>
+          <li>
+            The agent calls{" "}
+            <span className="font-mono text-foreground">pay 50 sat → api.foo.com</span>.
+          </li>
+          <li>
+            <span className="font-mono text-foreground">leashd</span> checks your
+            policy locally: allowlisted recipient, under the per-transaction max,
+            daily budget remaining, kill-switch off.
+          </li>
+          <li>
+            <span className="font-mono text-allow">Allowed</span> → leashd tells
+            your own Lightning wallet (over NWC) to pay the invoice. The sats go
+            directly from your wallet to the API. {BRAND} never touches them.
+          </li>
+          <li>
+            <span className="font-mono text-deny">Denied</span> or{" "}
+            <span className="font-mono text-capped">capped</span> → leashd returns
+            a structured refusal to the agent. No money moves.
+          </li>
+          <li>
+            Either way, leashd writes a signed event and pushes it to your{" "}
+            <Link
+              href="/dashboard/audit"
+              className="rounded text-primary underline-offset-2 outline-none hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              Audit feed
+            </Link>
+            .
+          </li>
+        </ol>
+        <Code>{`  AI agent ──pay 50 sat──▶ leashd (your machine)
+                              │  check policy (caps · allowlist · kill-switch)
+                              ├─ allowed ─▶ your wallet (NWC) ──▶ api.foo.com
+                              ├─ capped/denied ─▶ refusal back to agent
+                              └─ signed audit event ──▶ dashboard feed`}</Code>
+        <p className="font-sans text-sm leading-relaxed text-muted-foreground">
+          That is the whole idea: a prepaid card with a hard limit and an
+          itemised statement for your AI. Even a fully compromised agent, or a
+          breach of {BRAND} itself, cannot move funds, because the keys never
+          leave your machine.
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="font-mono text-lg font-semibold tracking-tight">
           Quickstart
         </h2>
 
