@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TerminalCard } from "./terminal-card";
-import { GET_STARTED_URL, GITHUB_URL } from "./brand";
+import { DOCS_URL, GITHUB_URL } from "./brand";
 
 export function Hero() {
   return (
@@ -16,18 +16,18 @@ export function Hero() {
           <span className="text-primary">Keep them on a leash.</span>
         </h1>
         <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-          A non-custodial spend-governance layer for autonomous agents. Budget
+          <span className="text-foreground">You hold the keys. leashd holds the policy.</span>{" "}
+          A non-custodial spend-governance layer for autonomous agents: budget
           caps, scoped credentials, allowlists, immutable audit, and a graded
-          kill-switch over Bitcoin Lightning and stablecoin rails. You hold the
-          keys. leashd holds the policy.
+          kill-switch over Bitcoin Lightning and stablecoin rails.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">
-            <Link href={GET_STARTED_URL}>Get started</Link>
+            <Link href={DOCS_URL}>Install leashd</Link>
           </Button>
           <Button asChild size="lg" variant="outline">
             <a href={GITHUB_URL} rel="noopener noreferrer">
-              GitHub
+              View on GitHub
             </a>
           </Button>
         </div>

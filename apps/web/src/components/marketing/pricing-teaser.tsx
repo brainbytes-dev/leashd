@@ -38,7 +38,7 @@ const TIERS: Tier[] = [
       "Approval workflows",
       "Alerting on policy events",
     ],
-    cta: "Start free",
+    cta: "Get notified",
     href: "/signup",
     highlight: true,
   },
@@ -68,7 +68,8 @@ export function PricingTeaser() {
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
             The sidecar is free and open source. The hosted control plane adds
-            policy authoring, audit aggregation, and team features.
+            policy authoring, audit aggregation, and team features. The Free
+            tier ships today. Pro and Team are on the roadmap.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -84,7 +85,11 @@ export function PricingTeaser() {
                   <h3 className="font-mono text-lg font-semibold">
                     {tier.name}
                   </h3>
-                  {tier.highlight ? (
+                  {tier.price === "Coming soon" ? (
+                    <Badge variant="outline" className="font-mono text-xs">
+                      Roadmap
+                    </Badge>
+                  ) : tier.highlight ? (
                     <Badge className="font-mono text-xs">Popular</Badge>
                   ) : null}
                 </div>
