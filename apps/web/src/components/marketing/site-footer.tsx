@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { Wordmark } from "./wordmark";
 import {
-  BRAND,
   DOCS_URL,
   FAQ_URL,
   COMMUNITY_URL,
@@ -50,9 +50,7 @@ export function SiteFooter() {
     <footer className="border-t border-border">
       <div className="mx-auto grid max-w-[66rem] gap-12 px-4 py-12 md:grid-cols-[1.5fr_repeat(3,1fr)]">
         <div className="flex flex-col gap-3">
-          <span className="font-sans text-lg font-bold tracking-tight">
-            {BRAND}
-          </span>
+          <Wordmark className="text-lg" />
           <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
             Non-custodial spend governance for autonomous AI agents.
           </p>

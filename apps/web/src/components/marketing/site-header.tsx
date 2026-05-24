@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/theme/theme-toggle";
+import { Wordmark } from "./wordmark";
 import {
-  BRAND,
   DOCS_URL,
   FAQ_URL,
   COMMUNITY_URL,
@@ -20,11 +20,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-background">
       <div className="mx-auto flex h-16 max-w-[66rem] items-center justify-between px-4">
-        <Link
-          href="/"
-          className="rounded-md font-sans text-lg font-bold tracking-tight"
-        >
-          {BRAND}
+        <Link href="/" className="rounded-md">
+          <Wordmark className="text-xl" />
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">
           {NAV.map((item) => (

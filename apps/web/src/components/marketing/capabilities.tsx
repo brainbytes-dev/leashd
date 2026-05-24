@@ -45,7 +45,7 @@ const CAPABILITIES: Capability[] = [
   {
     icon: ScrollText,
     title: "Immutable audit trail",
-    body: "An append-only, signed, exportable event log of every decision. Built to satisfy EU AI Act Article 12 logging.",
+    body: "An append-only, signed, exportable event log of every decision. Designed for EU AI Act Article 12 logging requirements.",
   },
   {
     icon: Network,

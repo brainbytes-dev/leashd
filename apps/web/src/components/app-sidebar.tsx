@@ -11,10 +11,10 @@ import {
   ScrollText,
   Settings,
   ShieldCheck,
-  Terminal,
 } from "lucide-react"
 
 import { NavUser } from "@/components/nav-user"
+import { Wordmark } from "@/components/marketing/wordmark"
 import {
   Sidebar,
   SidebarContent,
@@ -67,10 +67,7 @@ export function AppSidebar({
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <Link href="/dashboard">
-                <Terminal className="size-5! text-primary" aria-hidden />
-                <span className="font-mono text-base font-semibold tracking-tight">
-                  leashd
-                </span>
+                <Wordmark className="text-base" />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
