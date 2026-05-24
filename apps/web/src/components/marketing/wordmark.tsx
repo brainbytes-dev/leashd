@@ -1,19 +1,19 @@
 import { BRAND } from "./brand";
 
 /**
- * The leashd wordmark: lowercase mono brand + a blinking green terminal cursor
- * block, the project's signature mark. The cursor blink respects
- * prefers-reduced-motion (see globals.css .leashd-cursor).
+ * The leashd wordmark: lowercase mono brand + a static green terminal cursor
+ * block, the project's signature mark. The block is as tall as the letters and
+ * sits flush on the baseline.
  */
 export function Wordmark({ className }: { className?: string }) {
   return (
     <span
-      className={`inline-flex items-center font-mono font-bold lowercase tracking-tight text-foreground ${className ?? ""}`}
+      className={`inline-flex items-baseline font-mono font-bold lowercase tracking-tight text-foreground ${className ?? ""}`}
     >
       {BRAND}
       <span
         aria-hidden
-        className="leashd-cursor ml-[0.12em] inline-block h-[0.95em] w-[0.5em] translate-y-[0.06em] rounded-[2px] bg-primary"
+        className="ml-[0.1em] inline-block h-[0.72em] w-[0.42em] bg-primary"
       />
     </span>
   );
