@@ -15,6 +15,7 @@ import {
   getDb,
   eq,
   and,
+  gte,
   desc,
   sql,
   agents,
@@ -75,7 +76,7 @@ async function loadCounts(workspaceId: string): Promise<Counts> {
     .where(
       and(
         eq(auditEvents.workspaceId, workspaceId),
-        sql`${auditEvents.occurredAt} >= ${since}`
+        gte(auditEvents.occurredAt, since)
       )
     );
 
@@ -88,7 +89,7 @@ async function loadCounts(workspaceId: string): Promise<Counts> {
     .where(
       and(
         eq(auditEvents.workspaceId, workspaceId),
-        sql`${auditEvents.occurredAt} >= ${since}`
+        gte(auditEvents.occurredAt, since)
       )
     )
     .groupBy(auditEvents.decision);

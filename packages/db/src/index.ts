@@ -3,7 +3,7 @@ import postgres from "postgres";
 import * as schema from "./schema";
 
 export * from "./schema";
-export { eq, and, or, desc, asc, sql, isNull, isNotNull } from "drizzle-orm";
+export { eq, and, or, desc, asc, sql, isNull, isNotNull, gte, gt, lte, lt, count } from "drizzle-orm";
 
 let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
 let pgClient: ReturnType<typeof postgres> | null = null;
