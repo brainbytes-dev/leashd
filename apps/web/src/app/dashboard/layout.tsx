@@ -12,6 +12,10 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 
+// Authed dashboard: never statically prerendered (the layout reads the session
+// + DB at request time). Forces the whole /dashboard segment dynamic.
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: {
