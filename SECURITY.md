@@ -1,28 +1,26 @@
 # Security Policy
 
-## Supported Versions
+leashd guards money. We take security seriously and appreciate responsible disclosure.
 
-| Version | Supported |
-|---------|-----------|
-| latest (main) | ✅ |
+## Reporting a vulnerability
 
-## Reporting a Vulnerability
+Email **security@leashd.dev** with the details and, if possible, a proof of concept. Please do not open a public issue for security problems.
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+We aim to acknowledge within 72 hours and to keep you updated as we investigate. There is no paid bug bounty yet, but we credit reporters (with your permission) once a fix ships.
 
-If you discover a security vulnerability, please report it via [GitHub's private vulnerability reporting](https://github.com/brain-byt-es/nextjs-expo-monorepo/security/advisories/new).
+## Threat model
 
-Include as much of the following as possible:
-- Type of issue (e.g. SQL injection, XSS, auth bypass)
-- Affected file(s) and line numbers
-- Steps to reproduce
-- Potential impact
+leashd is non-custodial by design. The strongest guarantee follows from that:
 
-You'll receive a response within 48 hours. If the issue is confirmed, a patch will be released as soon as possible.
+- Keys, seeds, and rail secrets never leave the user's machine. The control plane stores policy and audit metadata only.
+- A full compromise of the control plane cannot move funds, because it never holds the keys that can.
+- The policy engine is deterministic and fail-closed: anything not explicitly permitted is denied, and any evaluation error denies.
+- Audit events are signed by the local daemon so tampering is detectable.
 
-## Security Best Practices for Users
+We are especially interested in reports about: policy-bypass paths, signature or verification flaws, credential handling in the sidecar, audit-log tampering, and any path that could let an agent spend outside its policy.
 
-- **Never commit `.env.local`** — all secrets stay local
-- Rotate `BETTER_AUTH_SECRET` and `STRIPE_WEBHOOK_SECRET` if exposed
-- Use environment-specific Stripe keys (test vs. live)
-- Enable Vercel's [Attack Challenge Mode](https://vercel.com/docs/security/attack-challenge-mode) in production
+## Scope
+
+In scope: `packages/leash-core`, `packages/leashd`, `apps/web`, and the hosted control plane at leashd.dev. Out of scope: third-party rails, wallets, and nodes you connect (report those to their maintainers).
+
+Operated by HR Online Consulting LLC (DBA BrainBytes Studio).

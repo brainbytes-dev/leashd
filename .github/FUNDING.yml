@@ -1,5 +1,10 @@
-# Fund this project
-# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+# Support leashd development.
+# https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
 
-github: brainbytes-dev
-buy_me_a_coffee: brainbytes
+# Bitcoin / Lightning is the native way to support a Bitcoin tool.
+# TODO: replace the Lightning address with the real one.
+custom:
+  - "https://leashd.dev"
+  - "lightning:leashd@walletofsatoshi.com"
+# github_sponsors and similar can be added here later, e.g.:
+# github: brainbytes-dev
