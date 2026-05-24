@@ -1,12 +1,14 @@
-import Database from "better-sqlite3";
+import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import type { Amount, AuditEvent, EvalState, MoneyUnit } from "@repo/leash-core";
 
 /**
  * Local log of record for leashd: spend ledger, append-only signed audit log,
- * rate counters, and cached signed policy. better-sqlite3 is synchronous, which
- * keeps the two-phase commit straightforward and atomic via transactions.
+ * rate counters, and cached signed policy. Uses Node's built-in `node:sqlite`
+ * (DatabaseSync) so the sidecar has ZERO native build step — important for an
+ * OSS tool installed across machines. The API is synchronous, which keeps the
+ * two-phase commit straightforward and atomic via an explicit transaction.
  */
 
 const SCHEMA = `
@@ -86,36 +88,36 @@ export interface Store {
 
 export function openStore(dbPath: string): Store {
   if (dbPath !== ":memory:") mkdirSync(dirname(dbPath), { recursive: true });
-  const db = new Database(dbPath);
-  db.pragma("journal_mode = WAL");
+  const db = new DatabaseSync(dbPath);
+  db.exec("PRAGMA journal_mode = WAL;");
   db.exec(SCHEMA);
 
-  const sumSpend = db.prepare<[string, string, number]>(
+  const sumSpend = db.prepare(
     `SELECT COALESCE(SUM(value), 0) AS total FROM spend
      WHERE agent_id = ? AND unit = ? AND occurred_at >= ?`
   );
-  const sumTask = db.prepare<[string, string, string]>(
+  const sumTask = db.prepare(
     `SELECT COALESCE(SUM(value), 0) AS total FROM spend
      WHERE agent_id = ? AND unit = ? AND task_ref = ?`
   );
-  const countRecent = db.prepare<[string, number]>(
+  const countRecent = db.prepare(
     `SELECT COUNT(*) AS n FROM spend WHERE agent_id = ? AND occurred_at >= ?`
   );
-  const insertSpend = db.prepare<[string, string, number, string | null, number]>(
+  const insertSpend = db.prepare(
     `INSERT INTO spend (agent_id, unit, value, task_ref, occurred_at)
      VALUES (?, ?, ?, ?, ?)`
   );
-  const insertAudit = db.prepare<[string, number, string, string, number]>(
+  const insertAudit = db.prepare(
     `INSERT INTO audit (agent_id, seq, event_json, signature, occurred_at)
      VALUES (?, ?, ?, ?, ?)`
   );
-  const maxSeq = db.prepare<[string]>(
+  const maxSeq = db.prepare(
     `SELECT COALESCE(MAX(seq), -1) AS m FROM audit WHERE agent_id = ?`
   );
-  const selPolicy = db.prepare<[string]>(
+  const selPolicy = db.prepare(
     `SELECT version, spec_json AS specJson, signature FROM policy_cache WHERE agent_id = ?`
   );
-  const upPolicy = db.prepare<[string, number, string, string, number]>(
+  const upPolicy = db.prepare(
     `INSERT INTO policy_cache (agent_id, version, spec_json, signature, updated_at)
      VALUES (?, ?, ?, ?, ?)
      ON CONFLICT(agent_id) DO UPDATE SET
@@ -124,7 +126,7 @@ export function openStore(dbPath: string): Store {
        signature = excluded.signature,
        updated_at = excluded.updated_at`
   );
-  const selUnpushed = db.prepare<[number]>(
+  const selUnpushed = db.prepare(
     `SELECT id, event_json AS eventJson, signature FROM audit
      WHERE pushed = 0 ORDER BY id ASC LIMIT ?`
   );
@@ -149,7 +151,8 @@ export function openStore(dbPath: string): Store {
     },
 
     commit({ agentId, amount, taskRef, event, signature }) {
-      const tx = db.transaction(() => {
+      db.exec("BEGIN");
+      try {
         insertSpend.run(
           agentId,
           amount.unit,
@@ -164,8 +167,11 @@ export function openStore(dbPath: string): Store {
           signature,
           event.occurredAt
         );
-      });
-      tx();
+        db.exec("COMMIT");
+      } catch (e) {
+        db.exec("ROLLBACK");
+        throw e;
+      }
     },
 
     recordAudit(agentId, event, signature) {
@@ -181,8 +187,7 @@ export function openStore(dbPath: string): Store {
     nextSeq,
 
     getPolicy(agentId) {
-      const row = selPolicy.get(agentId) as StoredPolicy | undefined;
-      return row;
+      return selPolicy.get(agentId) as StoredPolicy | undefined;
     },
 
     putPolicy(agentId, p) {

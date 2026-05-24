@@ -2,6 +2,7 @@ import {
   createPrivateKey,
   createPublicKey,
   sign as edSign,
+  verify as edVerify,
   type KeyObject,
 } from "node:crypto";
 import { canonicalize } from "@repo/leash-core";
@@ -58,4 +59,35 @@ export function getPublicKeyPem(): string | null {
   const key = loadPublicKey();
   if (!key) return null;
   return key.export({ type: "spki", format: "pem" }).toString();
+}
+
+/**
+ * Verify an ed25519 signature over a canonicalized payload, using a base64
+ * SPKI-DER public key (the format leashd ships in `signerPubKey`). Fail-closed:
+ * any malformed input or mismatch returns false.
+ *
+ * For audit ingest this gives tamper-evidence over the event. Pinning each
+ * agent's signer key at enrollment (so a token holder cannot rotate keys) is a
+ * follow-up hardening step, not done here.
+ */
+export function verifySignatureB64Spki(
+  payload: unknown,
+  signatureB64: string,
+  publicKeyB64Spki: string
+): boolean {
+  try {
+    const publicKey = createPublicKey({
+      key: Buffer.from(publicKeyB64Spki, "base64"),
+      format: "der",
+      type: "spki",
+    });
+    return edVerify(
+      null,
+      Buffer.from(canonicalize(payload)),
+      publicKey,
+      Buffer.from(signatureB64, "base64")
+    );
+  } catch {
+    return false;
+  }
 }

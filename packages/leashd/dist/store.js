@@ -1,10 +1,12 @@
-import Database from "better-sqlite3";
+import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 /**
  * Local log of record for leashd: spend ledger, append-only signed audit log,
- * rate counters, and cached signed policy. better-sqlite3 is synchronous, which
- * keeps the two-phase commit straightforward and atomic via transactions.
+ * rate counters, and cached signed policy. Uses Node's built-in `node:sqlite`
+ * (DatabaseSync) so the sidecar has ZERO native build step — important for an
+ * OSS tool installed across machines. The API is synchronous, which keeps the
+ * two-phase commit straightforward and atomic via an explicit transaction.
  */
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS spend (
@@ -43,8 +45,8 @@ const MONTH_MS = 30 * DAY_MS;
 export function openStore(dbPath) {
     if (dbPath !== ":memory:")
         mkdirSync(dirname(dbPath), { recursive: true });
-    const db = new Database(dbPath);
-    db.pragma("journal_mode = WAL");
+    const db = new DatabaseSync(dbPath);
+    db.exec("PRAGMA journal_mode = WAL;");
     db.exec(SCHEMA);
     const sumSpend = db.prepare(`SELECT COALESCE(SUM(value), 0) AS total FROM spend
      WHERE agent_id = ? AND unit = ? AND occurred_at >= ?`);
@@ -82,19 +84,23 @@ export function openStore(dbPath) {
             return { spend: { task, hour, day, month }, recentCount };
         },
         commit({ agentId, amount, taskRef, event, signature }) {
-            const tx = db.transaction(() => {
+            db.exec("BEGIN");
+            try {
                 insertSpend.run(agentId, amount.unit, amount.value, taskRef ?? null, event.occurredAt);
                 insertAudit.run(agentId, event.seq, JSON.stringify(event), signature, event.occurredAt);
-            });
-            tx();
+                db.exec("COMMIT");
+            }
+            catch (e) {
+                db.exec("ROLLBACK");
+                throw e;
+            }
         },
         recordAudit(agentId, event, signature) {
             insertAudit.run(agentId, event.seq, JSON.stringify(event), signature, event.occurredAt);
         },
         nextSeq,
         getPolicy(agentId) {
-            const row = selPolicy.get(agentId);
-            return row;
+            return selPolicy.get(agentId);
         },
         putPolicy(agentId, p) {
             upPolicy.run(agentId, p.version, p.specJson, p.signature, Date.now());
