@@ -147,27 +147,6 @@ export function getOpenApiSpec() {
           },
         },
       },
-      '/api/webhooks/revenuecat': {
-        post: {
-          summary: 'RevenueCat webhook',
-          tags: ['Webhooks'],
-          requestBody: {
-            required: true,
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                },
-              },
-            },
-          },
-          responses: {
-            200: {
-              description: 'Webhook processed',
-            },
-          },
-        },
-      },
       '/api/email/welcome': {
         post: {
           summary: 'Send welcome email',

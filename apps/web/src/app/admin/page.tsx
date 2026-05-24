@@ -27,7 +27,7 @@ export default function AdminOverviewPage() {
             <CardTitle className="text-3xl">—</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xs text-muted-foreground">Stripe + RevenueCat</p>
+            <p className="text-xs text-muted-foreground">Stripe</p>
           </CardContent>
         </Card>
 

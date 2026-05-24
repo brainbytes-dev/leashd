@@ -114,54 +114,6 @@ export const payments = pgTable(
   ]
 );
 
-// ─── Mobile Subscriptions (RevenueCat) ──────────────────────────────
-export const mobileSubscriptions = pgTable(
-  "mobile_subscriptions",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    revenuecatUserId: text("revenuecat_user_id").notNull().unique(),
-    productId: text("product_id").notNull(),
-    store: text("store").default("apple"), // apple, google, stripe
-    status: text("status").default("active").notNull(),
-    autoResumeDate: timestamp("auto_resume_date"),
-    expirationDate: timestamp("expiration_date"),
-    purchaseDate: timestamp("purchase_date"),
-    canceledAt: timestamp("canceled_at"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  },
-  (table) => [
-    index("idx_mobile_subscriptions_status").on(table.status),
-    index("idx_mobile_subscriptions_store").on(table.store),
-  ]
-);
-
-// ─── Mobile Payments (RevenueCat) ───────────────────────────────────
-export const mobilePayments = pgTable(
-  "mobile_payments",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    revenuecatUserId: text("revenuecat_user_id")
-      .notNull()
-      .references(() => mobileSubscriptions.revenuecatUserId),
-    transactionId: text("transaction_id").unique(),
-    productId: text("product_id").notNull(),
-    amount: bigint("amount", { mode: "number" }),
-    currency: text("currency").default("usd"),
-    store: text("store"),
-    status: text("status").default("completed").notNull(),
-    receiptData: jsonb("receipt_data"),
-    purchasedAt: timestamp("purchased_at"),
-    failedAt: timestamp("failed_at"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  },
-  (table) => [
-    index("idx_mobile_payments_subscription").on(table.revenuecatUserId),
-    index("idx_mobile_payments_status").on(table.status),
-  ]
-);
-
 // ─── Leash: Workspaces ──────────────────────────────────────────────
 export const workspaces = pgTable(
   "workspaces",
@@ -314,10 +266,6 @@ export type UserSubscription = typeof userSubscriptions.$inferSelect;
 export type NewUserSubscription = typeof userSubscriptions.$inferInsert;
 export type Payment = typeof payments.$inferSelect;
 export type NewPayment = typeof payments.$inferInsert;
-export type MobileSubscription = typeof mobileSubscriptions.$inferSelect;
-export type NewMobileSubscription = typeof mobileSubscriptions.$inferInsert;
-export type MobilePayment = typeof mobilePayments.$inferSelect;
-export type NewMobilePayment = typeof mobilePayments.$inferInsert;
 
 // ─── Leash type exports ─────────────────────────────────────────────
 export type Workspace = typeof workspaces.$inferSelect;

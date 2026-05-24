@@ -16,11 +16,6 @@ const envSchema = z.object({
   STRIPE_SECRET_KEY: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
 
-  // RevenueCat
-  EXPO_PUBLIC_REVENUECAT_API_KEY: z.string().optional(),
-  REVENUECAT_API_KEY: z.string().optional(),
-  REVENUECAT_WEBHOOK_SECRET: z.string().optional(),
-
   // Resend
   RESEND_API_KEY: z.string(),
   RESEND_FROM_EMAIL: z.string().email().optional(),
@@ -60,9 +55,6 @@ export function getEnv(): Env {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-    EXPO_PUBLIC_REVENUECAT_API_KEY: process.env.EXPO_PUBLIC_REVENUECAT_API_KEY,
-    REVENUECAT_API_KEY: process.env.REVENUECAT_API_KEY,
-    REVENUECAT_WEBHOOK_SECRET: process.env.REVENUECAT_WEBHOOK_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,

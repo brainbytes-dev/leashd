@@ -1,8 +1,0 @@
-{
-  "extends": "@repo/typescript-config/react-native.json",
-  "compilerOptions": {
-    "outDir": "./dist"
-  },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
-}
