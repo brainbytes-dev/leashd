@@ -15,9 +15,9 @@ leashd is non-custodial by design. The strongest guarantee follows from that:
 - Keys, seeds, and rail secrets never leave the user's machine. The control plane stores policy and audit metadata only.
 - A full compromise of the control plane cannot move funds, because it never holds the keys that can.
 - The policy engine is deterministic and fail-closed: anything not explicitly permitted is denied, and any evaluation error denies.
-- Audit events are signed by the local daemon so tampering is detectable.
+- Audit events are signed by leashd on your machine so tampering is detectable.
 
-We are especially interested in reports about: policy-bypass paths, signature or verification flaws, credential handling in the sidecar, audit-log tampering, and any path that could let an agent spend outside its policy.
+We are especially interested in reports about: policy-bypass paths, signature or verification flaws, credential handling in leashd, audit-log tampering, and any path that could let an agent spend outside its policy.
 
 ## Scope
 

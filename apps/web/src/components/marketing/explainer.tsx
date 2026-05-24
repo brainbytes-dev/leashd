@@ -12,8 +12,8 @@ export function Explainer() {
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
             leashd is a deterministic gate between your agent and the rail.
             Policy is evaluated before settlement, locally, and cannot be
-            bypassed by prompt manipulation. The free open-source sidecar,{" "}
-            <span className="font-mono text-foreground">leashd</span>, runs on
+            bypassed by prompt manipulation. The free open-source{" "}
+            <span className="font-mono text-foreground">leashd</span> runs on
             your own machine, holds the wallet connection, and enforces every
             rule. It never touches your funds or keys. The hosted control plane
             authors signed policy and aggregates a tamper-evident audit trail.

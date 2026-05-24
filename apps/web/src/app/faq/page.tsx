@@ -22,7 +22,7 @@ const FAQS: QA[] = [
   },
   {
     q: "Where do my keys live?",
-    a: "On your own machine. The leashd sidecar holds the wallet connection and any secrets locally. The hosted control plane signs policy and aggregates audit, and never sees a credential.",
+    a: "On your own machine. leashd holds the wallet connection and any secrets locally. The hosted control plane signs policy and aggregates audit, and never sees a credential.",
   },
   {
     q: "Which rails are supported?",
@@ -30,11 +30,11 @@ const FAQS: QA[] = [
   },
   {
     q: "Does it cost anything?",
-    a: "The open-source sidecar is free. The hosted control plane has a free workspace plus a paid tier for larger swarms, longer audit retention, approval workflows, and alerting.",
+    a: "Open-source leashd is free. The hosted control plane has a free workspace plus a paid tier for larger swarms, longer audit retention, approval workflows, and alerting.",
   },
   {
     q: "What is leashd?",
-    a: "leashd is the free open-source sidecar that runs on your own machine. It holds the wallet connection locally, verifies the signed policy, and enforces every rule before a payment touches a rail. It never moves funds on its own and never exposes your keys.",
+    a: "leashd is the free open-source program that runs on your own machine, right next to your agent. It holds the wallet connection locally, verifies the signed policy, and enforces every rule before a payment touches a rail. It never moves funds on its own and never exposes your keys.",
   },
   {
     q: "Does it work offline?",

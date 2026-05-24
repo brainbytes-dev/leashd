@@ -320,7 +320,7 @@ export default async function OverviewPage() {
             <GetStartedStep
               n={3}
               title="Run leashd"
-              body="Install the daemon locally; pay calls become policy-gated."
+              body="Install leashd; pay calls become policy-gated."
               href="/docs"
               cta="Read the docs"
             />

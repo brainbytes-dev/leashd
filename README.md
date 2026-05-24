@@ -71,7 +71,7 @@ leashd is in early access. Install from source for now; a published one-line ins
 git clone https://github.com/brainbytes-dev/leashd
 cd leashd && pnpm install
 
-# run the sidecar with your env (token + control plane URL)
+# run leashd with your env (token + control plane URL)
 LEASH_AGENT_TOKEN=lsh_live_xxxxxxxx \
 LEASH_API_URL=https://leashd.dev \
 pnpm --filter @repo/leashd dev
@@ -98,17 +98,17 @@ Then create a workspace and agent, set a policy, and your agent's `pay` calls ar
 
 ## Architecture (open core)
 
-leashd is open core. The local sidecar and the policy engine are open source under AGPL-3.0. The hosted control plane (policy authoring, audit aggregation, team, billing) is available at [leashd.dev](https://leashd.dev), and a commercial license is available (see [COMMERCIAL.md](./COMMERCIAL.md)).
+leashd is open core. leashd (the program that runs on your machine) and the policy engine are open source under AGPL-3.0. The hosted control plane (policy authoring, audit aggregation, team, billing) is available at [leashd.dev](https://leashd.dev), and a commercial license is available (see [COMMERCIAL.md](./COMMERCIAL.md)).
 
 ```
 packages/
   leash-core/   deterministic policy engine + shared contract (zod)
-  leashd/       the local sidecar: MCP server, governor, rail adapters, audit
+  leashd/       runs on your machine: MCP server, governor, rail adapters, audit
 apps/
   web/          the control plane (Next.js)
 ```
 
-Stack: TypeScript, Next.js, Turborepo, Drizzle, node:sqlite. Zero native build for the sidecar.
+Stack: TypeScript, Next.js, Turborepo, Drizzle, node:sqlite. Zero native build for leashd.
 
 ## Non-custodial by design
 

@@ -37,7 +37,7 @@ export function HowItWorks() {
         </div>
         <div className="mb-12 overflow-hidden rounded-lg border border-border bg-card p-4 md:p-6">
           <img
-            src="/illustrations/how-it-works.svg"
+            src="/illustrations/how-it-works.png"
             alt="A network diagram over a stylized world map: an AI agent sends a payment request to the central leashd policy gate, which checks caps, allowlist, and rate limits, then settles over Lightning, Cashu ecash, or a stablecoin rail, while writing a signed entry to the audit log."
             width={1200}
             height={520}

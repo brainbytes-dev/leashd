@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-leashd is a payment-governance control plane: a Next.js 16 web app plus a CLI sidecar (`leashd`) that enforces signed policies on connected payment rails. Turborepo for orchestration, pnpm workspaces. Payments are Stripe-only; there is no mobile app.
+leashd is a payment-governance control plane: a Next.js 16 web app plus a CLI program (`leashd`) that runs on the user's machine and enforces signed policies on connected payment rails. Turborepo for orchestration, pnpm workspaces. Payments are Stripe-only; there is no mobile app.
 
 ## Monorepo Structure
 
@@ -14,7 +14,7 @@ packages/
   email/        @repo/email — React Email templates (Resend)
   shadcn-ui/    @repo/shadcn-ui — Web UI components (Radix + Tailwind v4)
   leash-core/   @repo/leash-core — PolicySpec zod schemas + signing helpers
-  leashd/       @repo/leashd — CLI sidecar that enforces policies locally
+  leashd/       @repo/leashd — CLI program that runs on your machine and enforces policies locally
   typescript-config/  Shared tsconfig presets
   eslint-config/      Shared ESLint rules
 ```
@@ -111,7 +111,7 @@ See `.env.example` for all required vars. Key groups:
 - `POSTHOG_*` — Analytics
 - `OTEL_EXPORTER_OTLP_ENDPOINT` — OpenTelemetry trace export
 - `EDGE_CONFIG` — Vercel Edge Config (auto-set on Vercel)
-- `LEASH_*` — Control-plane signing key + leashd sidecar config (see `.env.example`)
+- `LEASH_*` — Control-plane signing key + leashd config (see `.env.example`)
 
 ## Observability & Rollout
 

@@ -8,7 +8,7 @@ import { BRAND, GITHUB_URL, DOCS_URL } from "@/components/marketing/brand";
 export const metadata: Metadata = {
   title: "Community",
   description:
-    "leashd is open core. The leashd sidecar is open source and non-custodial. Read the code, contribute, and try to break the leash.",
+    "leashd is open core. leashd is open source and non-custodial. Read the code, contribute, and try to break the leash.",
 };
 
 interface Block {
@@ -21,7 +21,7 @@ const BLOCKS: Block[] = [
   {
     icon: Unlock,
     title: "Non-custodial by design",
-    body: "The sidecar holds your wallet connection on your own machine and never moves funds on its own. The whole point is that you can verify this yourself. Read the code, run it locally, audit the policy path.",
+    body: "leashd holds your wallet connection on your own machine and never moves funds on its own. The whole point is that you can verify this yourself. Read the code, run it locally, audit the policy path.",
   },
   {
     icon: GitPullRequest,
@@ -51,9 +51,9 @@ export default function CommunityPage() {
               Open core. Open to scrutiny.
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-              {BRAND} only works if you can trust it without trusting us. The
-              enforcement sidecar is open source so you can read every line that
-              stands between your agent and your money.
+              {BRAND} only works if you can trust it without trusting us. leashd
+              is open source so you can read every line that stands between your
+              agent and your money.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Button asChild size="lg">

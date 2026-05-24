@@ -31,7 +31,7 @@ export function GetStarted() {
             Get started in three steps
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Open core. The sidecar is free and open source. The hosted control
+            Open core. leashd is free and open source. The hosted control
             plane has a paid tier.
           </p>
         </div>

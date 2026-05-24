@@ -16,25 +16,25 @@ interface CoreFeature {
 
 const CORE_FEATURES: CoreFeature[] = [
   {
-    illustration: "/illustrations/feature-caps.svg",
+    illustration: "/illustrations/feature-caps.png",
     alt: "A wallet meter with a green bar capping a flow of sats at a hard limit.",
     title: "Budget caps",
     body: "Per-task, rolling hourly, daily, and monthly limits, plus a per-transaction maximum. Hit the cap and the next payment is denied, deterministically.",
   },
   {
-    illustration: "/illustrations/feature-control.svg",
+    illustration: "/illustrations/feature-control.png",
     alt: "A leash collar and a scoped key beside a green kill-switch toggle.",
     title: "Scoped control",
     body: "Bind agents to spend-limited, revocable rail credentials with explicit scopes, then pull a graded kill-switch the moment something looks wrong. Keys never enter the agent sandbox or the LLM context.",
   },
   {
-    illustration: "/illustrations/feature-audit.svg",
+    illustration: "/illustrations/feature-audit.png",
     alt: "A terminal log feed showing green allow and red deny lines in an append-only ledger.",
     title: "Immutable audit trail",
     body: "An append-only, signed, exportable event log of every decision. Designed for EU AI Act Article 12 logging requirements.",
   },
   {
-    illustration: "/illustrations/feature-rails.svg",
+    illustration: "/illustrations/feature-rails.png",
     alt: "A Lightning bolt and a stablecoin coin routed through a single green checkpoint.",
     title: "Multi-rail, BTC-first",
     body: "Bitcoin Lightning and L402, Cashu ecash, and stablecoin over x402. Bind rails with priority and fall back when one is unavailable.",

@@ -17,7 +17,7 @@ const TIERS: Tier[] = [
   {
     name: "Free",
     price: "$0",
-    blurb: "The open-source sidecar, plus one workspace on the control plane.",
+    blurb: "Open-source leashd, plus one workspace on the control plane.",
     features: [
       "leashd, open source, self-hosted",
       "1 workspace",
@@ -67,7 +67,7 @@ export function PricingTeaser() {
             Open core. Start free.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            The sidecar is free and open source. The hosted control plane adds
+            leashd is free and open source. The hosted control plane adds
             policy authoring, audit aggregation, and team features. The Free
             tier ships today. Pro and Team are on the roadmap.
           </p>

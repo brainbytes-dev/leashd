@@ -1,6 +1,6 @@
 # leashd
 
-`leashd` is the open-source local sidecar for **Leash** — a non-custodial
+`leashd` is the open-source program that runs on your machine for **Leash**, a non-custodial
 spend-governance layer for AI agents.
 
 It runs next to your agent (Claude Code, a custom orchestrator, anything that

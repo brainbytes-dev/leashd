@@ -4,7 +4,7 @@ Thanks for helping build leashd. Contributions of all sizes are welcome: bug rep
 
 ## The one invariant
 
-**leashd stays non-custodial.** The sidecar must never transmit a user's keys, seeds, or rail secrets off the user's machine, and the control plane must never hold funds or keys. Any change that weakens this will be rejected. The control plane receives policy and audit metadata only.
+**leashd stays non-custodial.** leashd must never transmit a user's keys, seeds, or rail secrets off the user's machine, and the control plane must never hold funds or keys. Any change that weakens this will be rejected. The control plane receives policy and audit metadata only.
 
 ## Development setup
 
@@ -24,7 +24,7 @@ pnpm test         # vitest (leash-core + leashd)
 Monorepo (Turborepo + pnpm workspaces):
 
 - `packages/leash-core` deterministic policy engine and shared zod contract.
-- `packages/leashd` the local sidecar: MCP server, governor (two-phase commit), rail adapters, signed audit, node:sqlite store.
+- `packages/leashd` runs on your machine: MCP server, governor (two-phase commit), rail adapters, signed audit, node:sqlite store.
 - `apps/web` the control plane.
 
 ## Coding standards

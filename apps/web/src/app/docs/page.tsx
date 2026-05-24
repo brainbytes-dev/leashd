@@ -106,8 +106,8 @@ export default function DocsPage() {
                 </span>{" "}
                 {BRAND} is a non-custodial spend-governance layer for AI agents.
                 The control plane (this dashboard) authors signed policies and
-                stores a tamper-evident audit log. The local daemon,{" "}
-                <Mono>leashd</Mono>, runs on your machine, verifies each policy
+                stores a tamper-evident audit log.{" "}
+                <Mono>leashd</Mono> runs on your machine, verifies each policy
                 signature, and gates every payment your agent attempts before it
                 touches a rail.
               </p>
@@ -247,7 +247,7 @@ cd leashd && pnpm install`}</Code>
 
               <Step n={3} icon={Terminal} title="Run leashd">
                 <p>
-                  Run the daemon with your env. It connects out to the control
+                  Run leashd with your env. It connects out to the control
                   plane, pulls the signed policy, and listens locally as an MCP
                   server.
                 </p>
