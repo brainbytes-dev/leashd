@@ -31,3 +31,6 @@ Thumbs.db
 *.tsbuildinfo
 .claude/worktrees/
 templates-mobile/
+
+# Package build outputs
+packages/*/dist/
