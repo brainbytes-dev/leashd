@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { BRAND } from "@/components/marketing/brand";
 
 export const metadata: Metadata = {
-  title: "Quickstart — Leash",
+  title: "Quickstart — leashd",
   description:
     "Give your AI agents money and keep them on a leash. Non-custodial spend governance: caps, scoped credentials, and a signed audit log.",
 };
@@ -208,11 +208,11 @@ export default function DocsPage() {
             policy, and listens locally as an MCP server.
           </p>
           <Code>{`# install
-curl -fsSL https://leash.money/install.sh | sh
+curl -fsSL https://leashd.dev/install.sh | sh
 
 # run with your env
 LEASH_AGENT_TOKEN=lsh_live_xxxxxxxxxxxxxxxx \\
-LEASH_API_URL=https://leash.money \\
+LEASH_API_URL=https://leashd.dev \\
 leashd`}</Code>
           <p>
             Wire it into your agent stack. For Claude Code, add{" "}
@@ -226,7 +226,7 @@ leashd`}</Code>
       "args": ["--mcp"],
       "env": {
         "LEASH_AGENT_TOKEN": "lsh_live_xxxxxxxxxxxxxxxx",
-        "LEASH_API_URL": "https://leash.money"
+        "LEASH_API_URL": "https://leashd.dev"
       }
     }
   }

@@ -69,7 +69,7 @@ export function AppSidebar({
               <Link href="/dashboard">
                 <Terminal className="size-5! text-primary" aria-hidden />
                 <span className="font-mono text-base font-semibold tracking-tight">
-                  Leash
+                  leashd
                 </span>
               </Link>
             </SidebarMenuButton>

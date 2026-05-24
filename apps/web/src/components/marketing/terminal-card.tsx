@@ -47,12 +47,12 @@ const LINES: LogLine[] = [
 export function TerminalCard() {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card font-mono text-sm">
-      <div className="flex items-center gap-2 border-b border-border bg-muted/40 px-4 py-3">
+      <div className="flex items-center gap-2 border-b border-border px-4 py-3">
         <span className="size-3 rounded-full bg-deny/70" aria-hidden />
         <span className="size-3 rounded-full bg-capped/70" aria-hidden />
         <span className="size-3 rounded-full bg-allow/70" aria-hidden />
         <span className="ml-2 text-xs text-muted-foreground">
-          leashd · audit feed
+          leashd: audit feed
         </span>
       </div>
       <ul className="divide-y divide-border">

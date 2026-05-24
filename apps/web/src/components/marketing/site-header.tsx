@@ -1,34 +1,46 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Terminal } from "lucide-react";
 import { ModeToggle } from "@/components/theme/theme-toggle";
-import { BRAND, DOCS_URL } from "./brand";
+import {
+  BRAND,
+  DOCS_URL,
+  FAQ_URL,
+  COMMUNITY_URL,
+  GITHUB_URL,
+  GET_STARTED_URL,
+} from "./brand";
+
+const NAV = [
+  { label: "Docs", href: DOCS_URL },
+  { label: "FAQ", href: FAQ_URL },
+  { label: "Community", href: COMMUNITY_URL },
+];
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-10 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+    <header className="sticky top-0 z-10 border-b border-border bg-background">
+      <div className="mx-auto flex h-16 max-w-[66rem] items-center justify-between px-4">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-md font-mono text-lg font-semibold tracking-tight"
+          className="rounded-md font-sans text-lg font-bold tracking-tight"
         >
-          <Terminal className="size-5 text-primary" aria-hidden />
           {BRAND}
         </Link>
-        <nav className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm">
-            <Link href="#capabilities">Capabilities</Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm">
-            <Link href="#pricing">Pricing</Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm">
-            <Link href={DOCS_URL}>Docs</Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link href="/signup">Start free</Link>
+        <nav className="flex items-center gap-1 sm:gap-2">
+          {NAV.map((item) => (
+            <Button key={item.label} asChild variant="ghost" size="sm">
+              <Link href={item.href}>{item.label}</Link>
+            </Button>
+          ))}
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+            <a href={GITHUB_URL} rel="noopener noreferrer">
+              GitHub
+            </a>
           </Button>
           <ModeToggle />
+          <Button asChild size="sm">
+            <Link href={GET_STARTED_URL}>Get started</Link>
+          </Button>
         </nav>
       </div>
     </header>

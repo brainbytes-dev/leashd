@@ -6,8 +6,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-plex-sans);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-sans: var(--font-karla);
+  --font-mono: var(--font-plex-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -37,7 +37,7 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  /* Leash semantic colors (governance decisions) */
+  /* leashd semantic colors (governance decisions) */
   --color-allow: var(--allow);
   --color-deny: var(--deny);
   --color-capped: var(--capped);
@@ -49,89 +49,90 @@
 }
 
 /*
-  Leash — Terminal-Sharp design system (see /DESIGN.md).
-  Dark-first. Slate canvas, phosphor terminal-green accent, mono numerals.
-  Light theme supported with >=4.5:1 contrast.
+  leashd — Terminal design system, Cashu-leaning (see /DESIGN.md).
+  Dark-first, NEUTRAL canvas (zinc, not slate). Green phosphor accent.
+  Karla headings/sans + IBM Plex Mono body/code/amounts. 4px grid.
+  No blur, no zebra, no colors outside this palette. Light theme >=4.5:1.
 */
 
 :root {
-  --radius: 0.5rem; /* 8px base grid */
+  --radius: 0.5rem; /* default radius */
 
-  /* Light theme */
+  /* Light theme (neutral) */
   --background: #ffffff;
-  --foreground: #0f172a;
+  --foreground: #18181b;
   --card: #ffffff;
-  --card-foreground: #0f172a;
+  --card-foreground: #18181b;
   --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #16a34a; /* green-600 for contrast on white */
+  --popover-foreground: #18181b;
+  --primary: #059669; /* green for >=4.5:1 contrast on white */
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #475569; /* slate-600 minimum */
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #52525b; /* zinc-600 */
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
   --destructive: #dc2626;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #16a34a;
-  --allow: #16a34a;
+  --border: #e4e4e7; /* zinc-200 */
+  --input: #e4e4e7;
+  --ring: #059669;
+  --allow: #059669;
   --deny: #dc2626;
   --capped: #d97706;
   --info: #0284c7;
-  --chart-1: #16a34a;
+  --chart-1: #059669;
   --chart-2: #0284c7;
   --chart-3: #d97706;
-  --chart-4: #7c3aed;
+  --chart-4: #6366f1;
   --chart-5: #dc2626;
-  --sidebar: #f8fafc;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #16a34a;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #059669;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #16a34a;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #059669;
 }
 
 .dark {
-  /* Dark theme (default / brand home) */
-  --background: #0f172a; /* slate-900 */
-  --foreground: #f8fafc; /* slate-50 */
-  --card: #1e293b; /* slate-800 */
-  --card-foreground: #f8fafc;
-  --popover: #1e293b;
-  --popover-foreground: #f8fafc;
-  --primary: #22c55e; /* terminal green */
-  --primary-foreground: #0f172a;
-  --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
-  --muted: #243245;
-  --muted-foreground: #94a3b8; /* slate-400 */
-  --accent: #243245;
-  --accent-foreground: #f8fafc;
+  /* Dark theme (default / brand home), neutral zinc canvas */
+  --background: #18181b; /* zinc-900 */
+  --foreground: #f6f7ff;
+  --card: #000000; /* surface: pure black cards */
+  --card-foreground: #f6f7ff;
+  --popover: #000000;
+  --popover-foreground: #f6f7ff;
+  --primary: #10b981; /* green accent */
+  --primary-foreground: #18181b;
+  --secondary: #000000;
+  --secondary-foreground: #f6f7ff;
+  --muted: #000000;
+  --muted-foreground: #6b7280; /* gray-500 */
+  --accent: #000000;
+  --accent-foreground: #f6f7ff;
   --destructive: #ef4444;
-  --border: #334155; /* slate-700 */
-  --input: #334155;
-  --ring: #22c55e;
-  --allow: #22c55e;
+  --border: #3f3f46; /* zinc-700 */
+  --input: #3f3f46;
+  --ring: #10b981;
+  --allow: #10b981;
   --deny: #ef4444;
-  --capped: #f59e0b;
+  --capped: #fbbf24;
   --info: #38bdf8;
-  --chart-1: #22c55e;
+  --chart-1: #10b981;
   --chart-2: #38bdf8;
-  --chart-3: #f59e0b;
+  --chart-3: #fbbf24;
   --chart-4: #a78bfa;
   --chart-5: #ef4444;
-  --sidebar: #0f172a;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #22c55e;
-  --sidebar-primary-foreground: #0f172a;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #334155;
-  --sidebar-ring: #22c55e;
+  --sidebar: #18181b;
+  --sidebar-foreground: #f6f7ff;
+  --sidebar-primary: #10b981;
+  --sidebar-primary-foreground: #18181b;
+  --sidebar-accent: #000000;
+  --sidebar-accent-foreground: #f6f7ff;
+  --sidebar-border: #3f3f46;
+  --sidebar-ring: #10b981;
 }
 
 @layer base {

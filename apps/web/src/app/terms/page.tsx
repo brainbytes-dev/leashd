@@ -10,8 +10,8 @@ import {
 } from "@/components/marketing/legal-page";
 
 export const metadata: Metadata = {
-  title: "Terms of Service: Leash",
-  description: "The terms that govern your use of Leash.",
+  title: "Terms of Service: leashd",
+  description: "The terms that govern your use of leashd.",
   robots: { index: false, follow: false },
 };
 
@@ -19,15 +19,15 @@ export default function TermsPage() {
   return (
     <LegalPage title="Terms of Service" updated="May 23, 2026">
       <P>
-        These Terms govern your use of Leash (the &ldquo;Services&rdquo;),
-        operated by HR Online Consulting LLC (DBA Leash) (&ldquo;we,&rdquo;
+        These Terms govern your use of leashd (the &ldquo;Services&rdquo;),
+        operated by HR Online Consulting LLC (DBA leashd) (&ldquo;we,&rdquo;
         &ldquo;us,&rdquo; &ldquo;our&rdquo;). By creating an account or using the
         Services you agree to these Terms.
       </P>
 
       <H2>1. The Services</H2>
       <P>
-        Leash is <Strong>non-custodial spend-governance software for autonomous
+        leashd is <Strong>non-custodial spend-governance software for autonomous
         AI agents.</Strong> It lets you define spending policies (budget caps,
         per-agent and per-period limits, allowed endpoints and mints, time
         windows, kill-switches), enforce those policies when your agents attempt
@@ -36,7 +36,7 @@ export default function TermsPage() {
         did.
       </P>
       <P>
-        Leash authorises or denies payment requests according to your policy.
+        leashd authorises or denies payment requests according to your policy.
         The actual settlement happens on <Strong>your</Strong> connected rail,
         between <Strong>your</Strong> wallet/node/mint and the counterparty.
       </P>
@@ -44,13 +44,13 @@ export default function TermsPage() {
       <H2>2. Non-Custodial; No Money Transmission (read this)</H2>
       <UL>
         <LI>
-          Leash <Strong>never</Strong> takes custody of your funds, bitcoin,
+          leashd <Strong>never</Strong> takes custody of your funds, bitcoin,
           sats, stablecoins, or any balance, and <Strong>never</Strong> holds or
           controls your private keys, seed phrases, or equivalent security
           elements.
         </LI>
         <LI>
-          Leash is <Strong>not</Strong> a bank, money transmitter, money services
+          leashd is <Strong>not</Strong> a bank, money transmitter, money services
           business (MSB), exchange, custodian, broker, or financial
           intermediary. We do not move, hold, or transmit money or value on your
           behalf. We provide software that evaluates your own policies against
@@ -66,7 +66,7 @@ export default function TermsPage() {
         <LI>
           We strongly recommend connecting only <Strong>scoped, spend-limited</Strong>{" "}
           credentials (e.g. restricted macaroons, NWC budgets) so the
-          credential&apos;s own limits reinforce your Leash policy.
+          credential&apos;s own limits reinforce your leashd policy.
         </LI>
       </UL>
 
@@ -74,7 +74,7 @@ export default function TermsPage() {
       <P>
         We grant you a non-exclusive, non-transferable, revocable license to use
         the Services for your lawful purposes during your subscription. The
-        Leash name, design, documentation, and codebase remain ours. Audit logs
+        leashd name, design, documentation, and codebase remain ours. Audit logs
         and policies you create are yours; you can export them anytime.
       </P>
 
@@ -96,7 +96,7 @@ export default function TermsPage() {
           Abuse, overload, reverse-engineer for competitive cloning, or attempt
           to circumvent the security or rate limits of the Services.
         </LI>
-        <LI>Resell or redistribute Leash itself as a competing service.</LI>
+        <LI>Resell or redistribute leashd itself as a competing service.</LI>
       </UL>
       <P>
         We may suspend or terminate access for violations, with notice where
@@ -106,7 +106,7 @@ export default function TermsPage() {
       <H2>5. Your Compliance Responsibility</H2>
       <P>
         Depending on what your agents pay for and where you operate, you may have
-        your own regulatory, tax, and AML obligations. Leash is a tool; using it
+        your own regulatory, tax, and AML obligations. leashd is a tool; using it
         does not transfer those obligations to us and does not constitute legal,
         tax, or financial advice. You are responsible for your own compliance.
       </P>
@@ -122,12 +122,12 @@ export default function TermsPage() {
       <H2>7. Availability; No Guarantee of Enforcement Outcomes</H2>
       <P>
         We work to keep the Services available and accurate, but we do not
-        guarantee uninterrupted operation. <Strong>Leash is one layer of
+        guarantee uninterrupted operation. <Strong>leashd is one layer of
         defence, not a guarantee.</Strong> A policy decision depends on correct
         configuration, the behaviour of your connected rail, and network
         conditions outside our control. You remain responsible for using scoped
         credentials and reasonable limits so that no single failure (including a
-        failure of Leash) can cause loss beyond those limits.
+        failure of leashd) can cause loss beyond those limits.
       </P>
 
       <H2>8. Governing Law</H2>
@@ -135,10 +135,10 @@ export default function TermsPage() {
         These Terms are governed by the laws of North Carolina, United States.
         Before any formal proceeding, contact{" "}
         <a
-          href="mailto:support@leash.money"
+          href="mailto:support@leashd.dev"
           className="text-primary hover:underline"
         >
-          support@leash.money
+          support@leashd.dev
         </a>{" "}
         to resolve the matter informally. If unresolved within 60 days, either
         party may pursue legal remedies in the appropriate forum.
@@ -154,7 +154,7 @@ export default function TermsPage() {
       <P>
         WE DO NOT WARRANT THAT EVERY PAYMENT WILL BE CORRECTLY AUTHORISED OR
         DENIED, THAT POLICIES WILL ENFORCE PERFECTLY UNDER ALL RAIL AND NETWORK
-        CONDITIONS, OR THAT THE SERVICES WILL BE ERROR-FREE. BECAUSE LEASH IS
+        CONDITIONS, OR THAT THE SERVICES WILL BE ERROR-FREE. BECAUSE leashd IS
         NON-CUSTODIAL, WE HAVE NO ACCESS TO AND NO RESPONSIBILITY FOR YOUR FUNDS.
       </P>
       <P>

@@ -28,10 +28,10 @@ const POINTS: Point[] = [
 export function Problem() {
   return (
     <section className="border-t border-border">
-      <div className="mx-auto max-w-6xl px-4 py-20">
-        <div className="mb-12 max-w-2xl">
-          <h2 className="font-mono text-3xl font-bold tracking-tight">
-            An agent with an open wallet is a liability.
+      <div className="mx-auto max-w-[66rem] px-4 py-20">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <h2 className="font-sans text-3xl font-bold tracking-tight">
+            An agent with an open wallet is a liability
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
             Agents now discover services, buy compute, and pay other agents on
@@ -48,7 +48,7 @@ export function Problem() {
                 className="flex flex-col gap-3 rounded-lg border border-border bg-card p-6"
               >
                 <Icon className="size-6 text-deny" aria-hidden />
-                <h3 className="font-mono text-base font-semibold">
+                <h3 className="font-sans text-base font-bold">
                   {point.title}
                 </h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">

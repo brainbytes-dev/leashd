@@ -88,7 +88,7 @@ export function Note({ children }: { children: ReactNode }) {
 export function OperatorBlock() {
   return (
     <address className="not-italic font-mono text-sm leading-relaxed text-muted-foreground">
-      HR Online Consulting LLC (DBA Leash)
+      HR Online Consulting LLC (DBA leashd)
       <br />
       550 Kings Mountain
       <br />
@@ -96,13 +96,13 @@ export function OperatorBlock() {
       <br />
       Email:{" "}
       <a
-        href="mailto:support@leash.money"
+        href="mailto:support@leashd.dev"
         className="text-primary hover:underline"
       >
-        support@leash.money
+        support@leashd.dev
       </a>
       <br />
-      Web: leash.money
+      Web: leashd.dev
     </address>
   );
 }
