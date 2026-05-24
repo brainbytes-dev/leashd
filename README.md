@@ -64,14 +64,17 @@ The agent never gets your wallet. It gets a policy-gated `pay` tool over MCP tha
 
 ## Quickstart
 
-```bash
-# install the sidecar
-curl -fsSL https://leashd.dev/install.sh | sh
+leashd is in early access. Install from source for now; a published one-line install is on the way.
 
-# run it with your env (token + control plane URL)
+```bash
+# install from source (requires node >= 22.5 and pnpm)
+git clone https://github.com/brainbytes-dev/leashd
+cd leashd && pnpm install
+
+# run the sidecar with your env (token + control plane URL)
 LEASH_AGENT_TOKEN=lsh_live_xxxxxxxx \
 LEASH_API_URL=https://leashd.dev \
-leashd
+pnpm --filter @repo/leashd dev
 ```
 
 Wire it into Claude Code via `.mcp.json`:

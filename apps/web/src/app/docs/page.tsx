@@ -212,18 +212,19 @@ export default function DocsPage() {
 
             <Step n={3} icon={Terminal} title="Install and run leashd">
               <p>
-                Install the daemon and start it with your{" "}
-                <span className="text-foreground">LEASH_*</span> environment. It
-                connects out to the control plane, pulls the signed policy, and
-                listens locally as an MCP server.
+                leashd is in early access. Install from source for now; a
+                published one-line install is on the way. The daemon connects out
+                to the control plane, pulls the signed policy, and listens locally
+                as an MCP server.
               </p>
-              <Code>{`# install
-curl -fsSL https://leashd.dev/install.sh | sh
+              <Code>{`# install from source (requires node >= 22.5 and pnpm)
+git clone https://github.com/brainbytes-dev/leashd
+cd leashd && pnpm install
 
-# run with your env
+# run the sidecar with your env
 LEASH_AGENT_TOKEN=lsh_live_xxxxxxxxxxxxxxxx \\
 LEASH_API_URL=https://leashd.dev \\
-leashd`}</Code>
+pnpm --filter @repo/leashd dev`}</Code>
               <p>
                 Wire it into your agent stack. For Claude Code, add{" "}
                 <span className="text-foreground">leashd</span> to your{" "}
