@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { getDb, eq, desc, agents, policies, type Policy } from "@repo/db";
 import { getActiveContext } from "@/lib/leash/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { NavLeash } from "../nav-leash";
 import { PolicyEditor } from "./policy-editor";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +35,6 @@ export default async function PoliciesPage() {
           enforcing locally.
         </p>
       </header>
-      <NavLeash />
 
       {ctx.workspace ? (
         <>

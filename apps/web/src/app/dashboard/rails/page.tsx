@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getDb, eq, desc, railBindings } from "@repo/db";
 import { getActiveContext } from "@/lib/leash/server";
-import { NavLeash } from "../nav-leash";
 import { RailsClient, type RailRow } from "./rails-client";
 
 export const dynamic = "force-dynamic";
@@ -38,7 +37,6 @@ export default async function RailsPage() {
           Connected payment rails. Multi-rail, BTC-first.
         </p>
       </header>
-      <NavLeash />
       {ctx.workspace ? (
         <RailsClient workspaceId={ctx.workspace.id} rails={rows} />
       ) : (

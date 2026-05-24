@@ -18,7 +18,6 @@ import type { Decision } from "@repo/leash-core";
 import { getActiveContext } from "@/lib/leash/server";
 import { auditColumnsToAmount } from "@/lib/leash/api";
 import { formatAmount, decisionColor, decisionLabel } from "@/lib/leash/format";
-import { NavLeash } from "../nav-leash";
 import { AuditFilters } from "./audit-filters";
 
 export const dynamic = "force-dynamic";
@@ -91,7 +90,6 @@ export default async function AuditPage({
           12 grade.
         </p>
       </header>
-      <NavLeash />
 
       {!ctx.workspace ? (
         <p className="font-sans text-sm text-muted-foreground">
@@ -100,7 +98,7 @@ export default async function AuditPage({
       ) : (
         <>
           <AuditFilters agents={agentOptions} />
-          <div className="overflow-hidden rounded-lg border border-border bg-[#0F172A]">
+          <div className="overflow-hidden rounded-lg border border-border bg-card">
             <div className="flex items-center gap-2 border-b border-border px-4 py-2 font-mono text-xs text-muted-foreground">
               <span>timestamp</span>
               <span>·</span>
@@ -126,7 +124,7 @@ export default async function AuditPage({
                   return (
                     <div
                       key={e.id}
-                      className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 font-mono text-xs odd:bg-[#172033]"
+                      className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 font-mono text-xs odd:bg-muted/40"
                     >
                       <span className="text-muted-foreground tabular-nums">
                         {new Date(e.occurredAt).toISOString().replace("T", " ").slice(0, 19)}

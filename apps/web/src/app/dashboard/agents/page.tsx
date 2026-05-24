@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import { getDb, eq, desc, agents } from "@repo/db";
 import { getActiveContext } from "@/lib/leash/server";
-import { NavLeash } from "../nav-leash";
 import { AgentsClient, type AgentRow } from "./agents-client";
 
 export const dynamic = "force-dynamic";
@@ -38,7 +37,6 @@ export default async function AgentsPage() {
             : "No workspace yet — create one first."}
         </p>
       </header>
-      <NavLeash />
       {ctx.workspace ? (
         <AgentsClient workspaceId={ctx.workspace.id} agents={rows} />
       ) : (

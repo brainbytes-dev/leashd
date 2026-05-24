@@ -34,3 +34,5 @@ templates-mobile/
 
 # Package build outputs
 packages/*/dist/
+.vercel
+.env*.local

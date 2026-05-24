@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Terminal } from "lucide-react";
+import { ModeToggle } from "@/components/theme/theme-toggle";
 import { BRAND, DOCS_URL } from "./brand";
 
 export function SiteHeader() {
@@ -27,6 +28,7 @@ export function SiteHeader() {
           <Button asChild size="sm">
             <Link href="/signup">Start free</Link>
           </Button>
+          <ModeToggle />
         </nav>
       </div>
     </header>
