@@ -1,0 +1,87 @@
+<svg width="1200" height="520" viewBox="0 0 1200 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="How leashd works: agent to policy gate to settlement to audit">
+  <rect width="1200" height="520" fill="#18181b"/>
+
+  <!-- dotted world map (stylized) -->
+  <g fill="#3f3f46">
+    <!-- americas -->
+    <circle cx="180" cy="150" r="3"/><circle cx="200" cy="160" r="3"/><circle cx="195" cy="180" r="3"/><circle cx="215" cy="195" r="3"/><circle cx="205" cy="215" r="3"/><circle cx="225" cy="230" r="3"/><circle cx="240" cy="255" r="3"/><circle cx="230" cy="280" r="3"/><circle cx="250" cy="300" r="3"/><circle cx="245" cy="325" r="3"/><circle cx="160" cy="170" r="3"/><circle cx="175" cy="200" r="3"/>
+    <!-- europe / africa -->
+    <circle cx="560" cy="140" r="3"/><circle cx="580" cy="150" r="3"/><circle cx="600" cy="145" r="3"/><circle cx="575" cy="170" r="3"/><circle cx="595" cy="185" r="3"/><circle cx="585" cy="210" r="3"/><circle cx="600" cy="235" r="3"/><circle cx="590" cy="260" r="3"/><circle cx="605" cy="285" r="3"/><circle cx="595" cy="310" r="3"/><circle cx="620" cy="160" r="3"/><circle cx="615" cy="200" r="3"/>
+    <!-- asia / oceania -->
+    <circle cx="800" cy="150" r="3"/><circle cx="830" cy="160" r="3"/><circle cx="860" cy="155" r="3"/><circle cx="890" cy="170" r="3"/><circle cx="850" cy="185" r="3"/><circle cx="880" cy="200" r="3"/><circle cx="910" cy="195" r="3"/><circle cx="940" cy="210" r="3"/><circle cx="900" cy="240" r="3"/><circle cx="930" cy="260" r="3"/><circle cx="960" cy="300" r="3"/><circle cx="820" cy="190" r="3"/><circle cx="1000" cy="180" r="3"/><circle cx="1020" cy="220" r="3"/>
+  </g>
+
+  <!-- AGENT node (left) -->
+  <g transform="translate(70 200)">
+    <rect x="0" y="0" width="170" height="120" rx="12" fill="#000000" stroke="#3f3f46" stroke-width="2"/>
+    <circle cx="40" cy="44" r="20" fill="none" stroke="#10b981" stroke-width="3"/>
+    <circle cx="33" cy="40" r="3" fill="#10b981"/><circle cx="47" cy="40" r="3" fill="#10b981"/>
+    <path d="M32 52 q8 6 16 0" stroke="#10b981" stroke-width="3" fill="none"/>
+    <text x="70" y="40" fill="#f6f7ff" font-family="monospace" font-size="15">AI agent</text>
+    <text x="70" y="60" fill="#6b7280" font-family="monospace" font-size="12">over MCP</text>
+    <text x="16" y="98" fill="#6b7280" font-family="monospace" font-size="12">pay(amount, dest)</text>
+  </g>
+
+  <!-- arrow agent -> gate -->
+  <g stroke="#10b981" stroke-width="2.5" fill="none">
+    <path d="M240 260 H 470"/>
+    <path d="M462 252 L470 260 L462 268"/>
+  </g>
+  <text x="300" y="248" fill="#6b7280" font-family="monospace" font-size="12">1 - request</text>
+
+  <!-- CENTRAL policy gate shield -->
+  <g transform="translate(470 160)">
+    <path d="M120 0 L240 40 V 130 C 240 200, 180 240, 120 256 C 60 240, 0 200, 0 130 V 40 Z" fill="#000000" stroke="#10b981" stroke-width="3"/>
+    <path d="M70 128 l34 40 l66 -82" stroke="#10b981" stroke-width="5" fill="none"/>
+    <text x="120" y="40" fill="#10b981" font-family="monospace" font-size="18" text-anchor="middle" font-weight="bold">leashd</text>
+    <text x="120" y="220" fill="#6b7280" font-family="monospace" font-size="13" text-anchor="middle">policy gate</text>
+  </g>
+  <text x="560" y="150" fill="#6b7280" font-family="monospace" font-size="12">2 - check caps - allowlist - rate</text>
+
+  <!-- arrow gate -> rails -->
+  <g stroke="#10b981" stroke-width="2.5" fill="none">
+    <path d="M710 230 H 900"/>
+    <path d="M892 222 L900 230 L892 238"/>
+    <path d="M710 290 H 900"/>
+    <path d="M892 282 L900 290 L892 298"/>
+  </g>
+  <text x="740" y="218" fill="#6b7280" font-family="monospace" font-size="12">3 - settle</text>
+
+  <!-- rails panel -->
+  <g transform="translate(900 180)">
+    <!-- lightning rail -->
+    <rect x="0" y="0" width="230" height="50" rx="8" fill="#000000" stroke="#3f3f46" stroke-width="2"/>
+    <path d="M30 12 L16 32 H26 L20 48 L40 24 H30 Z" fill="#10b981"/>
+    <text x="56" y="30" fill="#f6f7ff" font-family="monospace" font-size="13">Lightning / L402</text>
+    <!-- ecash -->
+    <rect x="0" y="60" width="230" height="50" rx="8" fill="#000000" stroke="#3f3f46" stroke-width="2"/>
+    <circle cx="28" cy="85" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+    <text x="28" y="90" fill="#10b981" font-family="monospace" font-size="13" text-anchor="middle">e</text>
+    <text x="56" y="90" fill="#f6f7ff" font-family="monospace" font-size="13">Cashu ecash</text>
+    <!-- stablecoin -->
+    <rect x="0" y="120" width="230" height="50" rx="8" fill="#000000" stroke="#3f3f46" stroke-width="2"/>
+    <circle cx="28" cy="145" r="14" fill="none" stroke="#10b981" stroke-width="2"/>
+    <text x="28" y="150" fill="#f6f7ff" font-family="monospace" font-size="14" text-anchor="middle">$</text>
+    <text x="56" y="150" fill="#f6f7ff" font-family="monospace" font-size="13">Stablecoin x402</text>
+  </g>
+
+  <!-- arrow gate -> audit (down) -->
+  <g stroke="#10b981" stroke-width="2.5" fill="none">
+    <path d="M590 416 V 450 H 470"/>
+    <path d="M478 442 L470 450 L478 458"/>
+  </g>
+
+  <!-- audit-log panel (bottom) -->
+  <g transform="translate(150 430)">
+    <rect x="0" y="0" width="300" height="74" rx="10" fill="#000000" stroke="#3f3f46" stroke-width="2"/>
+    <text x="14" y="22" fill="#6b7280" font-family="monospace" font-size="12">4 - audit.log (signed)</text>
+    <circle cx="22" cy="44" r="6" fill="none" stroke="#10b981" stroke-width="2"/>
+    <path d="M19 44 l2 3 l5 -6" stroke="#10b981" stroke-width="2" fill="none"/>
+    <rect x="38" y="40" width="160" height="7" rx="3" fill="#10b981"/>
+    <circle cx="22" cy="62" r="6" fill="none" stroke="#ef4444" stroke-width="2"/>
+    <path d="M19 59 l6 6 m0 -6 l-6 6" stroke="#ef4444" stroke-width="2"/>
+    <rect x="38" y="58" width="120" height="7" rx="3" fill="#3f3f46"/>
+  </g>
+
+  <text x="600" y="40" fill="#f6f7ff" font-family="monospace" font-size="16" text-anchor="middle">agent -&gt; policy check -&gt; settle -&gt; audit</text>
+</svg>
