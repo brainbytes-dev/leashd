@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import { getDb, eq, desc, agents, policies, type Policy } from "@repo/db";
 import { getActiveContext } from "@/lib/leash/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PolicyEditor } from "./policy-editor";
+import { PolicyEditor, type ExistingPolicy } from "./policy-editor";
 
 export const dynamic = "force-dynamic";
 
@@ -37,35 +36,20 @@ export default async function PoliciesPage() {
       </header>
 
       {ctx.workspace ? (
-        <>
-          {existing.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-mono text-base">
-                  Active policies
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-2">
-                {existing.map((p) => (
-                  <div
-                    key={p.id}
-                    className="flex items-center justify-between border-b border-border py-2 last:border-0"
-                  >
-                    <span className="font-mono text-sm">{p.name}</span>
-                    <span className="flex items-center gap-3 font-mono text-xs text-muted-foreground">
-                      <span>{p.agentId ? "agent" : "workspace"}</span>
-                      <span>v{p.version}</span>
-                      <span className={p.signature ? "text-allow" : "text-capped"}>
-                        {p.signature ? "signed" : "unsigned"}
-                      </span>
-                    </span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+        <PolicyEditor
+          workspaceId={ctx.workspace.id}
+          agents={agentOptions}
+          existing={existing.map(
+            (p): ExistingPolicy => ({
+              id: p.id,
+              name: p.name,
+              agentId: p.agentId,
+              version: p.version,
+              signed: Boolean(p.signature),
+              spec: p.spec,
+            })
           )}
-          <PolicyEditor workspaceId={ctx.workspace.id} agents={agentOptions} />
-        </>
+        />
       ) : (
         <p className="font-sans text-sm text-muted-foreground">
           Create a workspace first.

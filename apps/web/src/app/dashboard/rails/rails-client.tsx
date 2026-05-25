@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Zap, Coins, CircleDollarSign, Lock } from "lucide-react";
+import { Plus, Zap, Coins, CircleDollarSign, Lock, Pencil, Trash2, Check, X } from "lucide-react";
 import type { Rail } from "@repo/leash-core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +42,9 @@ export function RailsClient({
   const [label, setLabel] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editLabel, setEditLabel] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function add() {
     if (busy || !label.trim()) return;
@@ -59,6 +62,27 @@ export function RailsClient({
     }
     setLabel("");
     router.refresh();
+  }
+
+  async function saveLabel(id: string) {
+    if (!editLabel.trim()) return;
+    const res = await fetch(`/api/leash/rails/${id}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ label: editLabel.trim() }),
+    });
+    if (res.ok) {
+      setEditingId(null);
+      router.refresh();
+    }
+  }
+
+  async function remove(id: string) {
+    const res = await fetch(`/api/leash/rails/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setDeletingId(null);
+      router.refresh();
+    }
   }
 
   return (
@@ -84,19 +108,109 @@ export function RailsClient({
               const meta = RAIL_META[r.rail] ?? { label: r.rail, Icon: CircleDollarSign };
               const { Icon } = meta;
               return (
-                <li key={r.id} className="flex items-center justify-between px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <Icon className="size-5 text-foreground" aria-hidden />
-                    <div>
-                      <div className="font-mono text-sm">{r.label}</div>
-                      <div className="font-sans text-xs text-muted-foreground">
-                        {meta.label}
+                <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-3">
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
+                    <Icon className="size-5 shrink-0 text-foreground" aria-hidden />
+                    {editingId === r.id ? (
+                      <Input
+                        autoFocus
+                        className="h-8 max-w-xs font-mono text-sm"
+                        value={editLabel}
+                        onChange={(e) => setEditLabel(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") void saveLabel(r.id);
+                          if (e.key === "Escape") setEditingId(null);
+                        }}
+                        aria-label="Rail label"
+                      />
+                    ) : (
+                      <div className="min-w-0">
+                        <div className="truncate font-mono text-sm">{r.label}</div>
+                        <div className="font-sans text-xs text-muted-foreground">
+                          {meta.label}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/40 px-2 py-0.5 font-mono text-xs text-allow">
-                    {r.status}
-                  </span>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {editingId === r.id ? (
+                      <>
+                        <Button
+                          size="icon-sm"
+                          variant="secondary"
+                          aria-label="Save label"
+                          className="cursor-pointer"
+                          onClick={() => saveLabel(r.id)}
+                        >
+                          <Check className="size-4 text-allow" aria-hidden />
+                        </Button>
+                        <Button
+                          size="icon-sm"
+                          variant="secondary"
+                          aria-label="Cancel edit"
+                          className="cursor-pointer"
+                          onClick={() => setEditingId(null)}
+                        >
+                          <X className="size-4" aria-hidden />
+                        </Button>
+                      </>
+                    ) : deletingId === r.id ? (
+                      <>
+                        <span className="font-sans text-xs text-muted-foreground">
+                          Delete?
+                        </span>
+                        <Button
+                          size="icon-sm"
+                          variant="secondary"
+                          aria-label="Confirm delete rail"
+                          className="cursor-pointer"
+                          onClick={() => remove(r.id)}
+                        >
+                          <Check className="size-4 text-deny" aria-hidden />
+                        </Button>
+                        <Button
+                          size="icon-sm"
+                          variant="secondary"
+                          aria-label="Cancel delete"
+                          className="cursor-pointer"
+                          onClick={() => setDeletingId(null)}
+                        >
+                          <X className="size-4" aria-hidden />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/40 px-2 py-0.5 font-mono text-xs text-allow">
+                          {r.status}
+                        </span>
+                        <Button
+                          size="icon-sm"
+                          variant="secondary"
+                          aria-label="Edit rail label"
+                          className="cursor-pointer"
+                          onClick={() => {
+                            setDeletingId(null);
+                            setEditingId(r.id);
+                            setEditLabel(r.label);
+                          }}
+                        >
+                          <Pencil className="size-4" aria-hidden />
+                        </Button>
+                        <Button
+                          size="icon-sm"
+                          variant="secondary"
+                          aria-label="Delete rail"
+                          className="cursor-pointer"
+                          onClick={() => {
+                            setEditingId(null);
+                            setDeletingId(r.id);
+                          }}
+                        >
+                          <Trash2 className="size-4 text-deny" aria-hidden />
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </li>
               );
             })}

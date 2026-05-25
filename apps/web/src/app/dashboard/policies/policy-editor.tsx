@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Save, ShieldAlert } from "lucide-react";
+import { Save, ShieldAlert, Pencil, Trash2, Check, X, FilePlus } from "lucide-react";
 import {
   PolicySpec,
   type BudgetWindow,
@@ -32,6 +32,30 @@ const RAILS: { value: Rail; label: string }[] = [
 
 type AgentOption = { id: string; name: string };
 
+export type ExistingPolicy = {
+  id: string;
+  name: string;
+  agentId: string | null;
+  version: number;
+  signed: boolean;
+  spec: unknown;
+};
+
+const EMPTY_BUDGETS: Record<BudgetWindow, string> = {
+  task: "",
+  hour: "",
+  day: "",
+  month: "",
+};
+
+function fmtAmount(a: { unit: MoneyUnit; value: number } | undefined): string {
+  return a ? String(a.value) : "";
+}
+
+function joinList(arr: string[] | undefined): string {
+  return arr?.join(", ") ?? "";
+}
+
 // Parse a comma/newline list into a trimmed, de-duped array (or undefined).
 function parseList(raw: string): string[] | undefined {
   const items = raw
@@ -50,13 +74,18 @@ function amount(value: string, unit: MoneyUnit) {
 export function PolicyEditor({
   workspaceId,
   agents,
+  existing,
 }: {
   workspaceId: string;
   agents: AgentOption[];
+  existing: ExistingPolicy[];
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingVersion, setEditingVersion] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const [name, setName] = useState("default-policy");
   const [agentId, setAgentId] = useState<string>("__workspace__");
@@ -146,7 +175,7 @@ export function PolicyEditor({
       setMsg({ kind: "err", text: "Save failed." });
       return;
     }
-    setMsg({ kind: "ok", text: "Policy saved and signed." });
+    setMsg({ kind: "ok", text: editingId ? "Policy updated and re-signed." : "Policy saved and signed." });
     router.refresh();
   }
 
@@ -154,10 +183,178 @@ export function PolicyEditor({
     setRails((prev) => (prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]));
   }
 
+  function resetForm() {
+    setName("default-policy");
+    setAgentId("__workspace__");
+    setUnit("sat");
+    setDefaultDecision("deny");
+    setPerTxMax("");
+    setBudgets({ ...EMPTY_BUDGETS });
+    setAllowEndpoints("");
+    setAllowDomains("");
+    setAllowLn("");
+    setAllowMints("");
+    setDenyEndpoints("");
+    setDenyDomains("");
+    setRateMax("");
+    setRateWindow("");
+    setApproval("");
+    setKillSwitch(false);
+    setGradedState("normal");
+    setRails([]);
+  }
+
+  function newPolicy() {
+    setEditingId(null);
+    setEditingVersion(null);
+    setMsg(null);
+    resetForm();
+  }
+
+  function loadPolicy(p: ExistingPolicy) {
+    const parsed = PolicySpec.safeParse(p.spec);
+    if (!parsed.success) {
+      setMsg({ kind: "err", text: "Could not read this policy's spec." });
+      return;
+    }
+    const s = parsed.data;
+    const u =
+      s.perTxMax?.unit ?? s.budgets[0]?.cap.unit ?? s.approvalThreshold?.unit ?? "sat";
+    const byWindow: Record<BudgetWindow, string> = { ...EMPTY_BUDGETS };
+    for (const b of s.budgets) byWindow[b.window] = String(b.cap.value);
+
+    setEditingId(p.id);
+    setEditingVersion(p.version);
+    setName(p.name);
+    setAgentId(p.agentId ?? "__workspace__");
+    setUnit(u);
+    setDefaultDecision(s.defaultDecision);
+    setPerTxMax(fmtAmount(s.perTxMax));
+    setBudgets(byWindow);
+    setAllowEndpoints(joinList(s.allow?.endpoints));
+    setAllowDomains(joinList(s.allow?.domains));
+    setAllowLn(joinList(s.allow?.lightningAddresses));
+    setAllowMints(joinList(s.allow?.mints));
+    setDenyEndpoints(joinList(s.deny?.endpoints));
+    setDenyDomains(joinList(s.deny?.domains));
+    setRateMax(s.rateLimit ? String(s.rateLimit.maxPerWindow) : "");
+    setRateWindow(s.rateLimit ? String(s.rateLimit.windowSeconds) : "");
+    setApproval(fmtAmount(s.approvalThreshold));
+    setKillSwitch(s.killSwitch);
+    setGradedState(s.gradedState);
+    setRails(s.rails);
+    setMsg(null);
+    setDeletingId(null);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function deletePolicy(id: string) {
+    const res = await fetch(`/api/leash/policies/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      setMsg({ kind: "err", text: "Delete failed." });
+      return;
+    }
+    setDeletingId(null);
+    if (editingId === id) newPolicy();
+    router.refresh();
+  }
+
   const unitLabel = unit === "sat" ? "sat" : "USD cents";
 
   return (
     <div className="flex flex-col gap-4">
+      {existing.length > 0 && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
+            <CardTitle className="font-mono text-base">Active policies</CardTitle>
+            {editingId && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer"
+                onClick={newPolicy}
+              >
+                <FilePlus className="size-4" aria-hidden />
+                New policy
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent className="flex flex-col gap-1">
+            {existing.map((p) => (
+              <div
+                key={p.id}
+                className={`flex items-center justify-between gap-3 rounded-md px-2 py-2 ${
+                  editingId === p.id ? "bg-secondary/40" : ""
+                }`}
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="truncate font-mono text-sm">{p.name}</span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    {p.agentId ? "agent" : "workspace"}
+                  </span>
+                  <span className="font-mono text-xs text-muted-foreground">
+                    v{p.version}
+                  </span>
+                  <span
+                    className={`font-mono text-xs ${p.signed ? "text-allow" : "text-capped"}`}
+                  >
+                    {p.signed ? "signed" : "unsigned"}
+                  </span>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  {deletingId === p.id ? (
+                    <>
+                      <span className="font-sans text-xs text-muted-foreground">
+                        Delete?
+                      </span>
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label="Confirm delete policy"
+                        className="cursor-pointer"
+                        onClick={() => deletePolicy(p.id)}
+                      >
+                        <Check className="size-4 text-deny" aria-hidden />
+                      </Button>
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label="Cancel delete"
+                        className="cursor-pointer"
+                        onClick={() => setDeletingId(null)}
+                      >
+                        <X className="size-4" aria-hidden />
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label="Edit policy"
+                        className="cursor-pointer"
+                        onClick={() => loadPolicy(p)}
+                      >
+                        <Pencil className="size-4" aria-hidden />
+                      </Button>
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label="Delete policy"
+                        className="cursor-pointer"
+                        onClick={() => setDeletingId(p.id)}
+                      >
+                        <Trash2 className="size-4 text-deny" aria-hidden />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle className="font-mono text-base">Scope</CardTitle>
@@ -346,11 +543,31 @@ export function PolicyEditor({
         </CardContent>
       </Card>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <Button className="cursor-pointer" disabled={busy} onClick={save}>
           <Save className="size-4" aria-hidden />
-          {busy ? "Saving…" : "Save & sign policy"}
+          {busy
+            ? "Saving…"
+            : editingId
+              ? "Update & re-sign policy"
+              : "Save & sign policy"}
         </Button>
+        {editingId && (
+          <Button
+            variant="outline"
+            className="cursor-pointer"
+            disabled={busy}
+            onClick={newPolicy}
+          >
+            <FilePlus className="size-4" aria-hidden />
+            New policy
+          </Button>
+        )}
+        {editingId && editingVersion != null && (
+          <span className="font-mono text-xs text-muted-foreground">
+            editing v{editingVersion}, saves as v{editingVersion + 1}
+          </span>
+        )}
         {msg && (
           <span
             className={`font-mono text-sm ${msg.kind === "ok" ? "text-allow" : "text-deny"}`}

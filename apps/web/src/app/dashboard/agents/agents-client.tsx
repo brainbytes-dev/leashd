@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Copy, Check, Pause, Play, Ban } from "lucide-react";
+import { Plus, Copy, Check, Pause, Play, Ban, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,6 +48,7 @@ export function AgentsClient({
   const [token, setToken] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   async function create() {
     if (busy || !name.trim()) return;
@@ -75,6 +76,14 @@ export function AgentsClient({
       body: JSON.stringify({ status }),
     });
     if (res.ok) router.refresh();
+  }
+
+  async function remove(id: string) {
+    const res = await fetch(`/api/leash/agents/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setDeletingId(null);
+      router.refresh();
+    }
   }
 
   function reset() {
@@ -231,40 +240,75 @@ export function AgentsClient({
                     <AgentStatusPill status={a.status} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="inline-flex gap-2">
-                      {a.status === "active" ? (
+                    {deletingId === a.id ? (
+                      <div className="inline-flex items-center gap-2">
+                        <span className="font-sans text-xs text-muted-foreground">
+                          Delete permanently?
+                        </span>
                         <Button
                           size="icon-sm"
                           variant="secondary"
-                          aria-label="Pause agent"
+                          aria-label="Confirm delete agent"
                           className="cursor-pointer"
-                          onClick={() => setStatus(a.id, "paused")}
+                          onClick={() => remove(a.id)}
                         >
-                          <Pause className="size-4 text-capped" aria-hidden />
+                          <Check className="size-4 text-deny" aria-hidden />
                         </Button>
-                      ) : a.status === "paused" ? (
                         <Button
                           size="icon-sm"
                           variant="secondary"
-                          aria-label="Resume agent"
+                          aria-label="Cancel delete"
                           className="cursor-pointer"
-                          onClick={() => setStatus(a.id, "active")}
+                          onClick={() => setDeletingId(null)}
                         >
-                          <Play className="size-4 text-allow" aria-hidden />
+                          <X className="size-4" aria-hidden />
                         </Button>
-                      ) : null}
-                      {a.status !== "revoked" && (
+                      </div>
+                    ) : (
+                      <div className="inline-flex gap-2">
+                        {a.status === "active" ? (
+                          <Button
+                            size="icon-sm"
+                            variant="secondary"
+                            aria-label="Pause agent"
+                            className="cursor-pointer"
+                            onClick={() => setStatus(a.id, "paused")}
+                          >
+                            <Pause className="size-4 text-capped" aria-hidden />
+                          </Button>
+                        ) : a.status === "paused" ? (
+                          <Button
+                            size="icon-sm"
+                            variant="secondary"
+                            aria-label="Resume agent"
+                            className="cursor-pointer"
+                            onClick={() => setStatus(a.id, "active")}
+                          >
+                            <Play className="size-4 text-allow" aria-hidden />
+                          </Button>
+                        ) : null}
+                        {a.status !== "revoked" && (
+                          <Button
+                            size="icon-sm"
+                            variant="secondary"
+                            aria-label="Revoke agent"
+                            className="cursor-pointer"
+                            onClick={() => setStatus(a.id, "revoked")}
+                          >
+                            <Ban className="size-4 text-deny" aria-hidden />
+                          </Button>
+                        )}
                         <Button
                           size="icon-sm"
                           variant="secondary"
-                          aria-label="Revoke agent"
+                          aria-label="Delete agent"
                           className="cursor-pointer"
-                          onClick={() => setStatus(a.id, "revoked")}
+                          onClick={() => setDeletingId(a.id)}
                         >
-                          <Ban className="size-4 text-deny" aria-hidden />
+                          <Trash2 className="size-4 text-deny" aria-hidden />
                         </Button>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
