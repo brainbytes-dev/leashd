@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getDb, auditEvents } from "@repo/db";
+import { getDb, eq, agents, auditEvents } from "@repo/db";
 import { AuditEvent } from "@repo/leash-core";
 import { err, authAgent, amountToAuditColumns } from "@/lib/leash/api";
 import { verifySignatureB64Spki } from "@/lib/leash/signing";
@@ -29,12 +29,28 @@ export async function POST(request: NextRequest) {
   if (event.agentId !== agent.id || event.workspaceId !== agent.workspaceId)
     return err(403, "Agent mismatch");
 
-  // Tamper-evidence: the signature must verify over the canonical event.
-  if (!verifySignatureB64Spki(event, signature, signerPubKey))
+  const db = getDb();
+
+  // Key pinning (enrollment, not per-request trust): once the agent's signer
+  // key is pinned it is immutable, and a differing key is rejected outright.
+  if (agent.signerPubKey && signerPubKey !== agent.signerPubKey)
+    return err(409, "Signer key mismatch (pinned at enrollment)");
+
+  // Tamper-evidence: verify the signature over the canonical event against the
+  // pinned key (or, before enrollment, the candidate key being presented).
+  const verifyKey = agent.signerPubKey ?? signerPubKey;
+  if (!verifySignatureB64Spki(event, signature, verifyKey))
     return err(400, "Invalid audit signature");
 
+  // Pin only AFTER a valid signature, so a bogus first push can't lock the
+  // agent to an attacker's key.
+  if (!agent.signerPubKey)
+    await db
+      .update(agents)
+      .set({ signerPubKey, updatedAt: new Date() })
+      .where(eq(agents.id, agent.id));
+
   const amount = amountToAuditColumns(event.amount);
-  const db = getDb();
 
   const inserted = await db
     .insert(auditEvents)

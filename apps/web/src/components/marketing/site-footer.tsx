@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Zap } from "lucide-react";
 import { Wordmark } from "./wordmark";
 import {
   DOCS_URL,
@@ -7,6 +8,7 @@ import {
   GITHUB_URL,
   GET_STARTED_URL,
   OPERATOR,
+  DONATE_LIGHTNING,
 } from "./brand";
 
 interface FooterLink {
@@ -54,6 +56,14 @@ export function SiteFooter() {
           <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
             Non-custodial spend governance for autonomous AI agents.
           </p>
+          <a
+            href={`lightning:${DONATE_LIGHTNING}`}
+            className="mt-1 inline-flex w-fit items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            title={DONATE_LIGHTNING}
+          >
+            <Zap className="size-4 text-primary" aria-hidden />
+            Donate sats
+          </a>
         </div>
         {COLUMNS.map((column) => (
           <div key={column.title} className="flex flex-col gap-3">

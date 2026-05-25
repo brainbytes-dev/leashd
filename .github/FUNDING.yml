@@ -1,10 +1,11 @@
 # Support leashd development.
 # https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
 
-# Bitcoin / Lightning is the native way to support a Bitcoin tool.
-# TODO: replace the Lightning address with the real one.
+# GitHub only renders the "Sponsor" button for recognised platforms or https
+# `custom` URLs — a bare `lightning:` URI is dropped and kills the whole button.
+# So the custom link points at the site, where the Lightning donate button lives.
+# TODO: replace the Lightning address in apps/web brand.ts (DONATE_LIGHTNING).
 custom:
   - "https://leashd.dev"
-  - "lightning:leashd@walletofsatoshi.com"
-# github_sponsors and similar can be added here later, e.g.:
+# Enable once a GitHub Sponsors profile exists:
 # github: brainbytes-dev

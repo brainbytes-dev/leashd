@@ -1,0 +1,1 @@
+ALTER TABLE "agents" ADD COLUMN "signer_pub_key" text;

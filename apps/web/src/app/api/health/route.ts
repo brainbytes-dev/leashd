@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSupabaseClient } from "@/lib/supabase";
+import { getDb, sql } from "@repo/db";
 import { DEMO_MODE } from "@/lib/demo-mode";
 
 export async function GET() {
@@ -11,23 +11,18 @@ export async function GET() {
   }
   const checks: Record<string, string> = {};
 
-  // Database check
+  // Database check: ping the Drizzle/Neon connection directly.
   try {
-    const supabase = getSupabaseClient();
-    if (supabase) {
-      checks.database = "ok";
-    } else {
-      checks.database = "not_configured";
-    }
+    await getDb().execute(sql`select 1`);
+    checks.database = "ok";
   } catch {
     checks.database = "error";
   }
 
-  // Environment check
   checks.env = process.env.NODE_ENV || "unknown";
   checks.timestamp = new Date().toISOString();
 
-  const allOk = checks.database !== "error";
+  const allOk = checks.database === "ok";
 
   return NextResponse.json(
     { status: allOk ? "healthy" : "degraded", checks },

@@ -164,6 +164,10 @@ export const agents = pgTable(
     label: text("label"), // human-friendly description
     // Hashed enrollment token leashd uses to authenticate this agent locally.
     tokenHash: text("token_hash").notNull(),
+    // leashd's ed25519 audit-signing public key (base64 SPKI DER). Pinned on the
+    // first authenticated audit push (enrollment) and immutable after: audit
+    // events must verify against THIS key, never a per-request supplied one.
+    signerPubKey: text("signer_pub_key"),
     status: text("status").default("active").notNull(), // active, paused, revoked
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),

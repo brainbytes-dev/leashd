@@ -8,3 +8,5 @@ export const GET_STARTED_URL = "/dashboard";
 export const GITHUB_URL = "https://github.com/brainbytes-dev/leashd";
 export const OPERATOR = "Built by BrainBytes Studio, an indie solo-dev shop.";
 export const SUPPORT_EMAIL = "support@leashd.dev";
+// Lightning address for sat donations. TODO: replace placeholder with the real one.
+export const DONATE_LIGHTNING = "leashd@walletofsatoshi.com";
