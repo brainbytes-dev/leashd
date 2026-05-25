@@ -20,8 +20,15 @@ async function main(): Promise<void> {
   if (config.nwcUrl) {
     rails.set("lightning_nwc", createLightningNwcAdapter(config.nwcUrl));
   }
-  rails.set("cashu", createCashuAdapter());
-  rails.set("x402", createX402Adapter());
+  if (config.cashuMintUrl) {
+    rails.set("cashu", createCashuAdapter({ mintUrl: config.cashuMintUrl, store }));
+  }
+  if (config.x402PrivateKey) {
+    rails.set(
+      "x402",
+      createX402Adapter({ privateKey: config.x402PrivateKey, network: config.x402Network })
+    );
+  }
 
   const governor = createGovernor({ store, config, audit, rails });
   const server = createMcpServer({ governor, store, config });

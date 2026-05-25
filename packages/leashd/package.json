@@ -17,10 +17,13 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@repo/leash-core": "workspace:*",
-    "@getalby/sdk": "^3.8.0",
+    "@cashu/cashu-ts": "^4.5.1",
     "@getalby/lightning-tools": "^5.1.0",
+    "@getalby/sdk": "^3.8.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
+    "@repo/leash-core": "workspace:*",
+    "viem": "^2.51.0",
+    "x402-fetch": "^1.2.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

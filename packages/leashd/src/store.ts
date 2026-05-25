@@ -41,6 +41,12 @@ CREATE TABLE IF NOT EXISTS policy_cache (
   signature TEXT NOT NULL,
   updated_at INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS cashu_proofs (
+  mint_url TEXT PRIMARY KEY,
+  proofs_json TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+);
 `;
 
 const HOUR_MS = 3_600_000;
@@ -83,6 +89,9 @@ export interface Store {
   putPolicy(agentId: string, p: StoredPolicy): void;
   unpushedAudit(limit: number): PersistedAudit[];
   markPushed(ids: number[]): void;
+  /** Cashu ecash proofs (the local balance) for a mint. Opaque to the store. */
+  getCashuProofs(mintUrl: string): unknown[];
+  setCashuProofs(mintUrl: string, proofs: unknown[]): void;
   close(): void;
 }
 
@@ -129,6 +138,16 @@ export function openStore(dbPath: string): Store {
   const selUnpushed = db.prepare(
     `SELECT id, event_json AS eventJson, signature FROM audit
      WHERE pushed = 0 ORDER BY id ASC LIMIT ?`
+  );
+  const selProofs = db.prepare(
+    `SELECT proofs_json AS proofsJson FROM cashu_proofs WHERE mint_url = ?`
+  );
+  const upProofs = db.prepare(
+    `INSERT INTO cashu_proofs (mint_url, proofs_json, updated_at)
+     VALUES (?, ?, ?)
+     ON CONFLICT(mint_url) DO UPDATE SET
+       proofs_json = excluded.proofs_json,
+       updated_at = excluded.updated_at`
   );
 
   function nextSeq(agentId: string): number {
@@ -213,6 +232,15 @@ export function openStore(dbPath: string): Store {
         `UPDATE audit SET pushed = 1 WHERE id IN (${ids.map(() => "?").join(",")})`
       );
       stmt.run(...ids);
+    },
+
+    getCashuProofs(mintUrl) {
+      const row = selProofs.get(mintUrl) as { proofsJson: string } | undefined;
+      return row ? (JSON.parse(row.proofsJson) as unknown[]) : [];
+    },
+
+    setCashuProofs(mintUrl, proofs) {
+      upProofs.run(mintUrl, JSON.stringify(proofs), Date.now());
     },
 
     close() {

@@ -23,6 +23,9 @@ const FileConfig = z
     agentToken: z.string().optional(),
     controlPlanePubKey: z.string().optional(),
     nwcUrl: z.string().optional(),
+    cashuMintUrl: z.string().optional(),
+    x402PrivateKey: z.string().optional(),
+    x402Network: z.string().optional(),
     dbPath: z.string().optional(),
     signingKeyPath: z.string().optional(),
   })
@@ -38,6 +41,12 @@ export interface LeashConfig {
   controlPlanePubKey?: string;
   /** NWC connection string for the Lightning rail. Secret. */
   nwcUrl?: string;
+  /** Cashu mint URL for the ecash rail. Proofs (the balance) live in the store. */
+  cashuMintUrl?: string;
+  /** EVM private key (0x-hex) for the x402 stablecoin rail. Secret. */
+  x402PrivateKey?: string;
+  /** x402 network (viem chain), e.g. "base" or "base-sepolia". Default "base". */
+  x402Network?: string;
   dbPath: string;
   /** leashd's own ed25519 signing identity. */
   signingPrivateKey: KeyObject;
@@ -122,6 +131,9 @@ export function loadConfig(): LeashConfig {
     controlPlanePubKey:
       process.env.LEASH_CONTROL_PLANE_PUBKEY ?? file.controlPlanePubKey,
     nwcUrl: process.env.LEASH_NWC_URL ?? file.nwcUrl,
+    cashuMintUrl: process.env.LEASH_CASHU_MINT_URL ?? file.cashuMintUrl,
+    x402PrivateKey: process.env.LEASH_X402_PRIVATE_KEY ?? file.x402PrivateKey,
+    x402Network: process.env.LEASH_X402_NETWORK ?? file.x402Network,
     dbPath:
       process.env.LEASH_DB_PATH ?? file.dbPath ?? join(configDir(), "leashd.db"),
     signingPrivateKey: privateKey,
