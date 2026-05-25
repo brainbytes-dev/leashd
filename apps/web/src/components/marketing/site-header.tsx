@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/theme/theme-toggle";
 import { Wordmark } from "./wordmark";
@@ -8,6 +9,7 @@ import {
   COMMUNITY_URL,
   GITHUB_URL,
   GET_STARTED_URL,
+  DONATE_LIGHTNING,
 } from "./brand";
 
 const NAV = [
@@ -32,6 +34,11 @@ export function SiteHeader() {
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
             <a href={GITHUB_URL} rel="noopener noreferrer">
               GitHub
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="icon" aria-label="Donate sats over Lightning">
+            <a href={`lightning:${DONATE_LIGHTNING}`} title={DONATE_LIGHTNING}>
+              <Zap className="size-4 text-primary" aria-hidden />
             </a>
           </Button>
           <ModeToggle />
