@@ -67,6 +67,47 @@ export async function sendPaymentFailedEmail(email: string) {
   }
 }
 
+export interface AlertPayload {
+  decision: string;
+  agentName?: string | null;
+  rail?: string | null;
+  endpoint?: string | null;
+  amount?: string | null;
+  reason?: string | null;
+  occurredAt: string;
+}
+
+export async function sendAlertEmail(email: string, a: AlertPayload) {
+  const subject = `leashd: ${a.decision.toUpperCase()} — ${a.agentName ?? "agent"}`;
+  if (DEMO_MODE) {
+    console.log(`[DEMO] Would send alert email to ${email}: ${subject}`);
+    return { data: { id: 'demo-email-id' }, error: null };
+  }
+  try {
+    return await getResend().emails.send({
+      from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
+      to: email,
+      subject,
+      html: `
+        <h2>Policy event: ${escapeHtml(a.decision)}</h2>
+        <table cellpadding="4" style="font-family:monospace;font-size:13px">
+          <tr><td>agent</td><td>${escapeHtml(a.agentName ?? "—")}</td></tr>
+          <tr><td>decision</td><td><b>${escapeHtml(a.decision)}</b></td></tr>
+          <tr><td>rail</td><td>${escapeHtml(a.rail ?? "—")}</td></tr>
+          <tr><td>endpoint</td><td>${escapeHtml(a.endpoint ?? "—")}</td></tr>
+          <tr><td>amount</td><td>${escapeHtml(a.amount ?? "—")}</td></tr>
+          <tr><td>reason</td><td>${escapeHtml(a.reason ?? "—")}</td></tr>
+          <tr><td>at</td><td>${escapeHtml(a.occurredAt)}</td></tr>
+        </table>
+        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/audit">View the audit feed</a></p>
+      `,
+    });
+  } catch (error) {
+    console.error('Failed to send alert email:', error);
+    throw error;
+  }
+}
+
 export async function sendSubscriptionCanceledEmail(email: string) {
   if (DEMO_MODE) {
     console.log(`[DEMO] Would send subscription canceled email to ${email}`);

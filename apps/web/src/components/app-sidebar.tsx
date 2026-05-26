@@ -11,6 +11,7 @@ import {
   Settings,
   ShieldCheck,
   Users,
+  BellRing,
 } from "lucide-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -32,6 +33,7 @@ const navMain = [
   { title: "Agents", url: "/dashboard/agents", icon: Bot },
   { title: "Policies", url: "/dashboard/policies", icon: ShieldCheck },
   { title: "Audit", url: "/dashboard/audit", icon: ScrollText },
+  { title: "Alerts", url: "/dashboard/alerts", icon: BellRing },
   { title: "Rails", url: "/dashboard/rails", icon: Cable },
 ] as const
 

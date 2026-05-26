@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PostHogProvider } from "@/components/providers/posthog-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const karla = Karla({
   variable: "--font-karla",
@@ -41,6 +42,7 @@ export default function RootLayout({
             <TooltipProvider>
               {children}
             </TooltipProvider>
+            <Toaster />
           </ThemeProvider>
         </PostHogProvider>
       </body>

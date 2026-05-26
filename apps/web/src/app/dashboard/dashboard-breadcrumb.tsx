@@ -13,6 +13,7 @@ const TITLES: Record<string, string> = {
   "/dashboard/agents": "Agents",
   "/dashboard/policies": "Policies",
   "/dashboard/audit": "Audit",
+  "/dashboard/alerts": "Alerts",
   "/dashboard/rails": "Rails",
   "/dashboard/team": "Team",
   "/dashboard/settings": "Settings",

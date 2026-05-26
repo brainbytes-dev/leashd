@@ -4,6 +4,9 @@ import { getDb, eq, agents, auditEvents } from "@repo/db";
 import { AuditEvent } from "@repo/leash-core";
 import { err, authAgent, amountToAuditColumns } from "@/lib/leash/api";
 import { verifySignatureB64Spki } from "@/lib/leash/signing";
+import { inngest } from "@/lib/inngest";
+import { formatAmount } from "@/lib/leash/format";
+import { auditColumnsToAmount } from "@/lib/leash/api";
 
 /**
  * leashd pushes signed audit events here (bearer agent-token auth). Events are
@@ -74,9 +77,28 @@ export async function POST(request: NextRequest) {
     })
     .returning({ id: auditEvents.id });
 
-  // Empty array → the (agentId, seq) already existed; treat as success.
-  return NextResponse.json(
-    { accepted: true, deduped: inserted.length === 0 },
-    { status: 202 }
-  );
+  const deduped = inserted.length === 0;
+
+  // Fan out alerts for newly recorded events (best-effort; never block the ack).
+  if (!deduped) {
+    try {
+      await inngest.send({
+        name: "leash/audit.recorded",
+        data: {
+          workspaceId: agent.workspaceId,
+          decision: event.decision,
+          agentName: agent.name,
+          rail: event.rail ?? null,
+          endpoint: event.endpoint ?? null,
+          amount: formatAmount(auditColumnsToAmount(amount)),
+          reason: event.reason ?? null,
+          occurredAt: new Date(event.occurredAt).toISOString(),
+        },
+      });
+    } catch {
+      // Alerting is best-effort; a transient Inngest error must not fail the push.
+    }
+  }
+
+  return NextResponse.json({ accepted: true, deduped }, { status: 202 });
 }

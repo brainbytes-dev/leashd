@@ -258,6 +258,24 @@ export const auditEvents = pgTable(
   ]
 );
 
+// ─── Leash: Alert Rules ─────────────────────────────────────────────
+// Notify on noteworthy policy decisions. Channel-agnostic (email or webhook).
+export const alertRules = pgTable(
+  "alert_rules",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    workspaceId: uuid("workspace_id")
+      .notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    channel: text("channel").notNull(), // email, webhook
+    destination: text("destination").notNull(), // email address or webhook URL
+    decisions: jsonb("decisions").notNull(), // string[] of decisions that trigger
+    enabled: boolean("enabled").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("idx_alert_rules_ws").on(table.workspaceId)]
+);
+
 // ─── Type Exports ───────────────────────────────────────────────────
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -285,3 +303,5 @@ export type RailBinding = typeof railBindings.$inferSelect;
 export type NewRailBinding = typeof railBindings.$inferInsert;
 export type AuditEvent = typeof auditEvents.$inferSelect;
 export type NewAuditEvent = typeof auditEvents.$inferInsert;
+export type AlertRule = typeof alertRules.$inferSelect;
+export type NewAlertRule = typeof alertRules.$inferInsert;
