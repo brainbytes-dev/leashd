@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Terminal, KeyRound, ShieldCheck, Cable, Server } from "lucide-react";
+import {
+  Terminal,
+  KeyRound,
+  ShieldCheck,
+  Cable,
+  Server,
+  Cloud,
+  Network,
+  Users,
+  BellRing,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -24,6 +34,7 @@ const SECTIONS = [
   { id: "quickstart", label: "Quickstart" },
   { id: "mcp-integration", label: "MCP integration" },
   { id: "self-host", label: "Self-host" },
+  { id: "hosted-vs-self-host", label: "Hosted vs self-host" },
 ];
 
 function Mono({ children }: { children: React.ReactNode }) {
@@ -326,6 +337,113 @@ pnpm --filter @repo/leashd dev`}</Code>
                 </a>
                 .
               </p>
+            </section>
+
+            <section
+              id="hosted-vs-self-host"
+              className="flex scroll-mt-24 flex-col gap-4"
+            >
+              <h2 className="font-sans text-2xl font-bold tracking-tight">
+                Hosted vs self-host
+              </h2>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                In both setups, <Mono>leashd</Mono> runs locally and is the only
+                thing that holds a wallet connection or moves money. The control
+                plane is never in the money path: it stores signed policy and
+                audit metadata, never a key or a fund. The only difference is who
+                runs that control plane.
+              </p>
+
+              <div className="overflow-hidden rounded-lg border border-border">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-border bg-secondary/30">
+                      <th className="px-4 py-2 font-sans font-medium"> </th>
+                      <th className="px-4 py-2 font-sans font-medium">
+                        <span className="inline-flex items-center gap-2">
+                          <Server className="size-4 text-primary" aria-hidden />
+                          Self-host
+                        </span>
+                      </th>
+                      <th className="px-4 py-2 font-sans font-medium">
+                        <span className="inline-flex items-center gap-2">
+                          <Cloud className="size-4 text-primary" aria-hidden />
+                          Hosted (leashd.dev)
+                        </span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="font-mono text-xs">
+                    <tr className="border-b border-border">
+                      <td className="px-4 py-2 text-muted-foreground">leashd (enforcement, keys)</td>
+                      <td className="px-4 py-2">your machine</td>
+                      <td className="px-4 py-2">your machine</td>
+                    </tr>
+                    <tr className="border-b border-border">
+                      <td className="px-4 py-2 text-muted-foreground">Control plane (policy + audit)</td>
+                      <td className="px-4 py-2">your infra</td>
+                      <td className="px-4 py-2">we run it</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2 text-muted-foreground">Custody risk in the cloud</td>
+                      <td className="px-4 py-2 text-allow">none</td>
+                      <td className="px-4 py-2 text-allow">none</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h3 className="font-sans text-base font-bold">
+                Why use the hosted control plane
+              </h3>
+              <ul className="flex flex-col gap-4">
+                <li className="flex items-start gap-3">
+                  <Server className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    <span className="text-foreground">No infra to run.</span> You
+                    run only <Mono>leashd</Mono> locally. No Postgres, Next.js
+                    app, auth, backups, or control-plane updates to maintain.
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Network className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    <span className="text-foreground">Fleet aggregation.</span>{" "}
+                    Run agents on 5, 20, or 100 machines: the control plane
+                    distributes one signed policy to all of them and aggregates
+                    every audit feed into a single view. Self-hosted, you wire
+                    that up yourself.
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Users className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    <span className="text-foreground">Team and RBAC.</span> Shared
+                    policies, roles, and org-wide rules across a team.
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <BellRing className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    <span className="text-foreground">
+                      Alerting, retention, export.
+                    </span>{" "}
+                    Alerts on policy events, long audit retention, and exportable
+                    logs for EU AI Act Article 12 grade record-keeping.
+                  </p>
+                </li>
+                <li className="flex items-start gap-3">
+                  <ShieldCheck className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    <span className="text-foreground">
+                      Managed, with zero custody risk.
+                    </span>{" "}
+                    The usual fear of money in the cloud does not apply: the
+                    control plane can never touch your funds, because the keys
+                    never leave your machine. SaaS convenience, no custody risk.
+                  </p>
+                </li>
+              </ul>
             </section>
 
             <footer className="flex flex-col gap-2 border-t border-border pt-7">

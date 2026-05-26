@@ -41,6 +41,10 @@ const FAQS: QA[] = [
     a: "Yes. If the control plane is unreachable, leashd keeps enforcing the last verified policy. Your agent is never unleashed by an outage.",
   },
   {
+    q: "Why use the hosted control plane if leashd runs locally?",
+    a: "leashd always runs locally and is the only thing that holds keys, in both setups. The hosted control plane saves you from running Postgres, the app, auth, and backups yourself; distributes one signed policy across a fleet of machines and aggregates every audit feed into one view; adds team roles, alerting, long retention, and exportable logs. And because the cloud can never touch your funds (keys never leave your machine), you get managed convenience with zero custody risk. Prefer to run everything yourself? Self-host the control plane from the open-source repo.",
+  },
+  {
     q: "Is leashd a money transmitter?",
     a: "No. leashd is non-custodial software that evaluates policy. It never takes custody: the control plane holds only policy and audit, and leashd moves money solely from your own wallet, under your policy, between you and the counterparty. It is not a bank, exchange, or money transmitter.",
   },

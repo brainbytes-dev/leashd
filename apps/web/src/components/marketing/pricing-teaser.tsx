@@ -67,9 +67,12 @@ export function PricingTeaser() {
             Open core. Start free.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            leashd is free and open source. The hosted control plane adds
-            policy authoring, audit aggregation, and team features. The Free
-            tier ships today. Pro and Team are on the roadmap.
+            leashd is free and open source, and always runs on your own machine.
+            Self-host the control plane too, or let us run it: the hosted control
+            plane saves you the infra, distributes one signed policy across a
+            fleet, aggregates every audit feed, and adds team roles and alerting,
+            all with zero custody risk, because keys never leave your machine.
+            The Free tier ships today. Pro and Team are on the roadmap.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
