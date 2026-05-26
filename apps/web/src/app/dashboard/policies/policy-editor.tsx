@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TIMEZONES, browserTz } from "@/lib/timezones";
+import { TIMEZONES, TZ_OPTIONS, browserTz, tzLabel } from "@/lib/timezones";
 
 const WINDOWS: BudgetWindow[] = ["task", "hour", "day", "month"];
 const DAYS: { value: number; label: string }[] = [
@@ -597,13 +597,14 @@ export function PolicyEditor({
               onChange={(e) => setTimezone(e.target.value)}
               className="h-9 w-full max-w-sm rounded-md border border-input bg-transparent px-3 font-mono text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30"
             >
-              {(TIMEZONES.includes(timezone) ? TIMEZONES : [timezone, ...TIMEZONES]).map(
-                (tz) => (
-                  <option key={tz} value={tz}>
-                    {tz}
-                  </option>
-                )
-              )}
+              {(TIMEZONES.includes(timezone)
+                ? TZ_OPTIONS
+                : [{ value: timezone, label: tzLabel(timezone) }, ...TZ_OPTIONS]
+              ).map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
             </select>
           </Field>
 

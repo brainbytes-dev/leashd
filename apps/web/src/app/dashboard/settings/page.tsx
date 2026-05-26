@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { TIMEZONES } from "@/lib/timezones"
+import { TIMEZONES, TZ_OPTIONS, tzLabel } from "@/lib/timezones"
 
 export default function SettingsPage() {
   const { data: session } = useSession()
@@ -165,11 +165,11 @@ export default function SettingsPage() {
                   className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50 dark:bg-input/30"
                 >
                   {(TIMEZONES.includes(formData.timezone)
-                    ? TIMEZONES
-                    : [formData.timezone, ...TIMEZONES]
-                  ).map((tz) => (
-                    <option key={tz} value={tz}>
-                      {tz}
+                    ? TZ_OPTIONS
+                    : [{ value: formData.timezone, label: tzLabel(formData.timezone) }, ...TZ_OPTIONS]
+                  ).map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
                     </option>
                   ))}
                 </select>

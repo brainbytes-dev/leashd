@@ -20,18 +20,47 @@ const FALLBACK_TZ = [
 ];
 
 function compute(): string[] {
+  let list: string[] = FALLBACK_TZ;
   try {
     const fn = (Intl as { supportedValuesOf?: (k: string) => string[] })
       .supportedValuesOf;
-    const list = fn ? fn("timeZone") : [];
-    if (list.length > FALLBACK_TZ.length) return list;
+    const runtime = fn ? fn("timeZone") : [];
+    if (runtime.length > FALLBACK_TZ.length) list = runtime;
   } catch {
     /* fall through */
   }
-  return FALLBACK_TZ;
+  // supportedValuesOf exposes "Etc/UTC", not plain "UTC". Guarantee "UTC" is
+  // always present and first so it stays selectable after any other pick.
+  return ["UTC", ...list.filter((z) => z !== "UTC")];
 }
 
 export const TIMEZONES = compute();
+
+/** Current UTC offset for a zone, e.g. "UTC+01:00". DST-aware (at render time). */
+function offsetLabel(tz: string): string {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: tz,
+      timeZoneName: "longOffset",
+    }).formatToParts(new Date());
+    const name = parts.find((p) => p.type === "timeZoneName")?.value ?? "";
+    return name.replace("GMT", "UTC");
+  } catch {
+    return "";
+  }
+}
+
+/** Option label: zone id plus its current offset, e.g. "Europe/Zurich (UTC+01:00)". */
+export function tzLabel(tz: string): string {
+  if (tz === "UTC") return "UTC";
+  const o = offsetLabel(tz);
+  return o && o !== tz ? `${tz} (${o})` : tz;
+}
+
+/** Precomputed once (offset formatting is not free); render these directly. */
+export const TZ_OPTIONS: { value: string; label: string }[] = TIMEZONES.map(
+  (tz) => ({ value: tz, label: tzLabel(tz) })
+);
 
 export function browserTz(): string {
   try {
