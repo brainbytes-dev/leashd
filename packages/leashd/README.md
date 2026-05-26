@@ -22,8 +22,8 @@ the control plane cannot move your funds. The control plane signs policies;
 - **Deterministic policy engine** (from `@repo/leash-core`): budget caps
   (task/hour/day/month), per-transaction max, allow/deny lists, rate limits,
   time windows, approval thresholds, kill switch, graded shutdown.
-- **Lightning rail** over NWC (NIP-47) via `@getalby/sdk`. Cashu and x402 are
-  stubbed for the MVP.
+- **Lightning rail** over NWC (NIP-47) via `@getalby/sdk`, plus a **Cashu**
+  ecash rail (melt to settle a Lightning invoice). Bitcoin-only by design.
 - **Local SQLite** spend ledger + signed audit log (the record of truth), pushed
   best-effort to the control plane (queued locally when offline).
 

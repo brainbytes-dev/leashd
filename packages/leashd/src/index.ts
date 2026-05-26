@@ -8,4 +8,3 @@ export { signEvent, signPayload, verifyPayload, verifyPolicySignature } from "./
 export type { RailAdapter, RailResult } from "./rails/types";
 export { createLightningNwcAdapter } from "./rails/lightning-nwc";
 export { createCashuAdapter } from "./rails/cashu";
-export { createX402Adapter } from "./rails/x402";

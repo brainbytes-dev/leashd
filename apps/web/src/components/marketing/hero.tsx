@@ -8,7 +8,7 @@ export function Hero() {
     <section className="mx-auto max-w-[66rem] px-4 py-20 md:py-28">
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
         <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-          Non-custodial. MCP-native. BTC-first.
+          Bitcoin-only. Non-custodial. MCP-native.
         </p>
         <h1 className="font-sans text-4xl font-bold leading-[1.2] tracking-tight sm:text-5xl">
           Give your AI agents money.
@@ -19,7 +19,7 @@ export function Hero() {
           <span className="text-foreground">You hold the keys. leashd holds the policy.</span>{" "}
           A non-custodial spend-governance layer for autonomous agents: budget
           caps, scoped credentials, allowlists, immutable audit, and a graded
-          kill-switch over Bitcoin Lightning and stablecoin rails.
+          kill-switch over Bitcoin Lightning and Cashu ecash. Bitcoin only.
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg">

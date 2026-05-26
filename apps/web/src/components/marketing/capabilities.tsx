@@ -35,9 +35,9 @@ const CORE_FEATURES: CoreFeature[] = [
   },
   {
     illustration: "/illustrations/feature-rails.svg",
-    alt: "A Lightning bolt and a stablecoin coin routed through a single green checkpoint.",
-    title: "Multi-rail, BTC-first",
-    body: "Bitcoin Lightning and L402, Cashu ecash, and stablecoin over x402. Bind rails with priority and fall back when one is unavailable.",
+    alt: "A Lightning bolt and a Cashu ecash coin routed through a single green checkpoint.",
+    title: "Bitcoin-only, multi-rail",
+    body: "Bitcoin Lightning and L402, plus Cashu ecash. No EVM, no stablecoins, no shitcoins. Bind rails with priority and fall back when one is unavailable.",
   },
 ];
 

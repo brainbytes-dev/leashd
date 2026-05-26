@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Zap, Coins, CircleDollarSign, Lock, Pencil, Trash2, Check, X } from "lucide-react";
+import { Plus, Zap, Coins, Lock, Pencil, Trash2, Check, X } from "lucide-react";
 import type { Rail } from "@repo/leash-core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +27,6 @@ export type RailRow = {
 const RAIL_META: Record<string, { label: string; Icon: typeof Zap }> = {
   lightning_nwc: { label: "Lightning / NWC", Icon: Zap },
   cashu: { label: "Cashu", Icon: Coins },
-  x402: { label: "x402 / USDC", Icon: CircleDollarSign },
 };
 
 export function RailsClient({
@@ -105,7 +104,7 @@ export function RailsClient({
         ) : (
           <ul className="divide-y divide-border">
             {rails.map((r) => {
-              const meta = RAIL_META[r.rail] ?? { label: r.rail, Icon: CircleDollarSign };
+              const meta = RAIL_META[r.rail] ?? { label: r.rail, Icon: Coins };
               const { Icon } = meta;
               return (
                 <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-3">
@@ -232,7 +231,6 @@ export function RailsClient({
               <SelectContent>
                 <SelectItem value="lightning_nwc">Lightning / NWC</SelectItem>
                 <SelectItem value="cashu">Cashu</SelectItem>
-                <SelectItem value="x402">x402 / USDC</SelectItem>
               </SelectContent>
             </Select>
           </div>

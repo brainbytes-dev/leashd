@@ -14,7 +14,7 @@ import { BRAND, TAGLINE } from "@/components/marketing/brand";
 export const metadata: Metadata = {
   title: `${BRAND}: Spend governance for AI agents`,
   description:
-    "Non-custodial spend governance for autonomous AI agents. Budget caps, scoped credentials, allowlists, immutable audit, and a graded kill-switch over Bitcoin Lightning and stablecoin rails.",
+    "Non-custodial spend governance for autonomous AI agents. Budget caps, scoped credentials, allowlists, immutable audit, and a graded kill-switch over Bitcoin Lightning and Cashu ecash. Bitcoin-only.",
   openGraph: {
     title: `${BRAND}: ${TAGLINE}`,
     description:

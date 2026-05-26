@@ -15,7 +15,8 @@ export const Amount = z.object({
 });
 export type Amount = z.infer<typeof Amount>;
 
-export const Rail = z.enum(["lightning_nwc", "cashu", "x402"]);
+// Bitcoin-only by design: Lightning (NWC / L402) and Cashu ecash. No EVM/altcoin rails.
+export const Rail = z.enum(["lightning_nwc", "cashu"]);
 export type Rail = z.infer<typeof Rail>;
 
 export const BudgetWindow = z.enum(["task", "hour", "day", "month"]);

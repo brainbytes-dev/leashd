@@ -9,7 +9,6 @@ import { startPolicySync } from "./policy-sync";
 import type { RailAdapter } from "./rails/types";
 import { createLightningNwcAdapter } from "./rails/lightning-nwc";
 import { createCashuAdapter } from "./rails/cashu";
-import { createX402Adapter } from "./rails/x402";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -22,12 +21,6 @@ async function main(): Promise<void> {
   }
   if (config.cashuMintUrl) {
     rails.set("cashu", createCashuAdapter({ mintUrl: config.cashuMintUrl, store }));
-  }
-  if (config.x402PrivateKey) {
-    rails.set(
-      "x402",
-      createX402Adapter({ privateKey: config.x402PrivateKey, network: config.x402Network })
-    );
   }
 
   const governor = createGovernor({ store, config, audit, rails });

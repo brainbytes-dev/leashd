@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
   },
   description:
-    "Give your AI agents money. Keep them on a leash. Non-custodial spend governance: budget caps, scoped credentials, audit trails, kill-switch. Bitcoin Lightning and stablecoin, multi-rail.",
+    "Give your AI agents money. Keep them on a leash. Non-custodial spend governance: budget caps, scoped credentials, audit trails, kill-switch. Bitcoin Lightning and Cashu ecash. Bitcoin-only.",
 };
 
 export default function RootLayout({

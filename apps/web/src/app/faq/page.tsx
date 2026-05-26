@@ -26,7 +26,7 @@ const FAQS: QA[] = [
   },
   {
     q: "Which rails are supported?",
-    a: "Bitcoin Lightning and L402, Cashu ecash, and stablecoins over x402. Bind rails with priority and fall back when one is unavailable. leashd is multi-rail and BTC-first.",
+    a: "Bitcoin Lightning and L402, plus Cashu ecash. Bind rails with priority and fall back when one is unavailable. leashd is Bitcoin-only by design: no EVM, no stablecoins, no altcoins.",
   },
   {
     q: "Does it cost anything?",

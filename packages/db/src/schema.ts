@@ -212,7 +212,7 @@ export const railBindings = pgTable(
     workspaceId: uuid("workspace_id")
       .notNull()
       .references(() => workspaces.id, { onDelete: "cascade" }),
-    rail: text("rail").notNull(), // lightning_nwc, cashu, x402
+    rail: text("rail").notNull(), // lightning_nwc, cashu (Bitcoin-only)
     label: text("label").notNull(),
     // Non-secret metadata only (e.g. node alias, mint URL host, last 4 of pubkey).
     meta: jsonb("meta"),
@@ -241,7 +241,7 @@ export const auditEvents = pgTable(
     rail: text("rail"),
     endpoint: text("endpoint"),
     amountMsat: bigint("amount_msat", { mode: "number" }), // sats rails
-    amountMinor: bigint("amount_minor", { mode: "number" }), // stablecoin minor units
+    amountMinor: bigint("amount_minor", { mode: "number" }), // reserved (non-sat minor units)
     currency: text("currency"),
     reason: text("reason"),
     policyVersion: bigint("policy_version", { mode: "number" }),

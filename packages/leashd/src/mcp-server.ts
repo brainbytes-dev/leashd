@@ -11,7 +11,7 @@ import { loadAgentPolicy } from "./policy";
  * MCP server exposing the policy-gated payment toolset over stdio.
  *
  * SECURITY — anti tool-description-poisoning: the amount the governor acts on
- * comes ONLY from the structured `amount` tool argument (or, for an L402/x402
+ * comes ONLY from the structured `amount` tool argument (or, for an L402
  * flow, the server-committed invoice), NEVER from `reason` or any free-text
  * field. We never parse a number out of prose.
  */

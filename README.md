@@ -6,7 +6,7 @@
 
 <p align="center">
   Non-custodial spend governance for autonomous AI agents.<br/>
-  Budget caps, scoped credentials, kill-switch, signed audit trail. Bitcoin Lightning and stablecoins. MCP-native.
+  Budget caps, scoped credentials, kill-switch, signed audit trail. Bitcoin Lightning and Cashu ecash, Bitcoin-only. MCP-native.
 </p>
 
 <p align="center">
@@ -59,7 +59,7 @@ The agent never gets your wallet. It gets a policy-gated `pay` tool over MCP tha
 | Approval thresholds | human-in-the-loop above a value you set |
 | Graded shutdown | a dimmer, not just a kill-switch: attenuate scope, drop tools, escalate approvals |
 | Signed audit trail | append-only, tamper-evident, exportable. EU AI Act Article 12 grade |
-| Multi-rail | Bitcoin Lightning and L402, Cashu ecash, stablecoins over x402. BTC-first |
+| Multi-rail | Bitcoin Lightning and L402, plus Cashu ecash. Bitcoin-only, no EVM or altcoins |
 | MCP-native | drops into Claude Code or any MCP host |
 
 ## Quickstart
@@ -117,9 +117,11 @@ You hold the keys. leashd holds the policy. The control plane stores only polici
 ## Roadmap
 
 - [x] Lightning / L402 rail, policy engine, MCP server, signed audit
-- [ ] Cashu ecash rail
-- [ ] x402 / stablecoin rail
-- [ ] Approval workflow UI, team and RBAC, alerting
+- [x] Cashu ecash rail
+- [x] Team and RBAC, audit CSV export
+- [ ] Approval workflow UI, alerting, long audit retention
+
+Bitcoin-only by design. No EVM, stablecoin, or altcoin rails. Ever.
 
 ## Contributing
 

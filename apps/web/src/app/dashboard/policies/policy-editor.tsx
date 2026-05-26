@@ -96,7 +96,6 @@ function minToHHMM(min: number): string {
 const RAILS: { value: Rail; label: string }[] = [
   { value: "lightning_nwc", label: "Lightning / NWC" },
   { value: "cashu", label: "Cashu" },
-  { value: "x402", label: "x402 / USDC" },
 ];
 
 type AgentOption = { id: string; name: string };
@@ -158,7 +157,8 @@ export function PolicyEditor({
 
   const [name, setName] = useState("default-policy");
   const [agentId, setAgentId] = useState<string>("__workspace__");
-  const [unit, setUnit] = useState<MoneyUnit>("sat");
+  // Bitcoin-only: all amounts are sats.
+  const unit: MoneyUnit = "sat";
   const [defaultDecision, setDefaultDecision] = useState<"allow" | "deny">("deny");
   const [perTxMax, setPerTxMax] = useState("");
   const [budgets, setBudgets] = useState<Record<BudgetWindow, string>>({
@@ -297,7 +297,6 @@ export function PolicyEditor({
   function resetForm() {
     setName("default-policy");
     setAgentId("__workspace__");
-    setUnit("sat");
     setDefaultDecision("deny");
     setPerTxMax("");
     setBudgets({ ...EMPTY_BUDGETS });
@@ -331,8 +330,6 @@ export function PolicyEditor({
       return;
     }
     const s = parsed.data;
-    const u =
-      s.perTxMax?.unit ?? s.budgets[0]?.cap.unit ?? s.approvalThreshold?.unit ?? "sat";
     const byWindow: Record<BudgetWindow, string> = { ...EMPTY_BUDGETS };
     for (const b of s.budgets) byWindow[b.window] = String(b.cap.value);
 
@@ -340,7 +337,6 @@ export function PolicyEditor({
     setEditingVersion(p.version);
     setName(p.name);
     setAgentId(p.agentId ?? "__workspace__");
-    setUnit(u);
     setDefaultDecision(s.defaultDecision);
     setPerTxMax(fmtAmount(s.perTxMax));
     setBudgets(byWindow);
@@ -380,7 +376,7 @@ export function PolicyEditor({
     router.refresh();
   }
 
-  const unitLabel = unit === "sat" ? "sat" : "USD cents";
+  const unitLabel = "sat";
 
   return (
     <div className="flex flex-col gap-4">
@@ -480,7 +476,7 @@ export function PolicyEditor({
         <CardHeader>
           <CardTitle className="font-mono text-base">Scope</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-3">
+        <CardContent className="grid gap-4 sm:grid-cols-2">
           <Field label="Policy name" htmlFor="pol-name">
             <Input
               id="pol-name"
@@ -501,17 +497,6 @@ export function PolicyEditor({
                     {a.name}
                   </SelectItem>
                 ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label="Amount unit" htmlFor="pol-unit">
-            <Select value={unit} onValueChange={(v) => setUnit(v as MoneyUnit)}>
-              <SelectTrigger id="pol-unit" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="sat">sat</SelectItem>
-                <SelectItem value="usd_cent">USD cents</SelectItem>
               </SelectContent>
             </Select>
           </Field>
