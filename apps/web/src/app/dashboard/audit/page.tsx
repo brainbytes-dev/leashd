@@ -4,7 +4,10 @@ import {
   XCircle,
   AlertTriangle,
   HelpCircle,
+  Download,
 } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   getDb,
   eq,
@@ -83,12 +86,29 @@ export default async function AuditPage({
 
   return (
     <main className="flex flex-col gap-6 p-6">
-      <header className="flex flex-col gap-1">
-        <h1 className="font-mono text-2xl font-semibold tracking-tight">Audit</h1>
-        <p className="font-sans text-sm text-muted-foreground">
-          Append-only, signed governance log pushed from leashd. EU AI Act Art.
-          12 grade.
-        </p>
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="font-mono text-2xl font-semibold tracking-tight">Audit</h1>
+          <p className="font-sans text-sm text-muted-foreground">
+            Append-only, signed governance log pushed from leashd. EU AI Act Art.
+            12 grade.
+          </p>
+        </div>
+        {ctx.workspace && (
+          <Button asChild variant="outline" size="sm" className="cursor-pointer">
+            <Link
+              href={`/api/leash/audit/export?${new URLSearchParams({
+                workspaceId: ctx.workspace.id,
+                ...(sp.agentId ? { agentId: sp.agentId } : {}),
+                ...(sp.decision ? { decision: sp.decision } : {}),
+              }).toString()}`}
+              prefetch={false}
+            >
+              <Download className="size-4" aria-hidden />
+              Export CSV
+            </Link>
+          </Button>
+        )}
       </header>
 
       {!ctx.workspace ? (

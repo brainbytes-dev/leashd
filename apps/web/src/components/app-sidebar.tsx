@@ -11,6 +11,7 @@ import {
   ScrollText,
   Settings,
   ShieldCheck,
+  Users,
 } from "lucide-react"
 
 import { NavUser } from "@/components/nav-user"
@@ -33,6 +34,7 @@ const navMain = [
   { title: "Policies", url: "/dashboard/policies", icon: ShieldCheck },
   { title: "Audit", url: "/dashboard/audit", icon: ScrollText },
   { title: "Rails", url: "/dashboard/rails", icon: Cable },
+  { title: "Team", url: "/dashboard/team", icon: Users },
 ] as const
 
 const navSecondary = [

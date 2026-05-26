@@ -34,16 +34,37 @@ const DAYS: { value: number; label: string }[] = [
   { value: 6, label: "Sat" },
 ];
 
-// All IANA zones; native <select> gives keyboard typeahead over the long list.
+// Comprehensive fallback if the runtime lacks Intl.supportedValuesOf. Being a
+// fixed list keeps server and client identical (no hydration mismatch) even on
+// a reduced-ICU runtime, while still offering real worldwide coverage.
+const FALLBACK_TZ = [
+  "UTC",
+  "America/Anchorage", "America/Los_Angeles", "America/Denver", "America/Chicago",
+  "America/New_York", "America/Toronto", "America/Mexico_City", "America/Bogota",
+  "America/Lima", "America/Sao_Paulo", "America/Argentina/Buenos_Aires",
+  "Atlantic/Reykjavik", "Europe/London", "Europe/Lisbon", "Europe/Madrid",
+  "Europe/Paris", "Europe/Berlin", "Europe/Zurich", "Europe/Rome",
+  "Europe/Amsterdam", "Europe/Stockholm", "Europe/Warsaw", "Europe/Athens",
+  "Europe/Helsinki", "Europe/Kyiv", "Europe/Istanbul", "Europe/Moscow",
+  "Africa/Casablanca", "Africa/Lagos", "Africa/Johannesburg", "Africa/Nairobi",
+  "Africa/Cairo", "Asia/Jerusalem", "Asia/Riyadh", "Asia/Dubai",
+  "Asia/Tehran", "Asia/Karachi", "Asia/Kolkata", "Asia/Dhaka",
+  "Asia/Bangkok", "Asia/Jakarta", "Asia/Shanghai", "Asia/Hong_Kong",
+  "Asia/Singapore", "Asia/Taipei", "Asia/Tokyo", "Asia/Seoul",
+  "Australia/Perth", "Australia/Sydney", "Pacific/Auckland", "Pacific/Honolulu",
+];
+
+// All IANA zones from the runtime, else the worldwide fallback above.
 function allTimezones(): string[] {
   try {
     const fn = (Intl as { supportedValuesOf?: (k: string) => string[] })
       .supportedValuesOf;
-    if (fn) return fn("timeZone");
+    const list = fn ? fn("timeZone") : [];
+    if (list.length > FALLBACK_TZ.length) return list;
   } catch {
     /* fall through */
   }
-  return ["UTC"];
+  return FALLBACK_TZ;
 }
 const TIMEZONES = allTimezones();
 
@@ -158,7 +179,9 @@ export function PolicyEditor({
   const [killSwitch, setKillSwitch] = useState(false);
   const [gradedState, setGradedState] = useState<GradedState>("normal");
   const [rails, setRails] = useState<Rail[]>([]);
-  const [timezone, setTimezone] = useState<string>(browserTz);
+  // Deterministic default ("UTC") so SSR and client match; the user picks their
+  // zone from the full list, and resetForm seeds the browser zone client-side.
+  const [timezone, setTimezone] = useState<string>("UTC");
   const [windows, setWindows] = useState<WindowRow[]>([]);
 
   function buildSpec(): unknown {
@@ -630,11 +653,13 @@ export function PolicyEditor({
               onChange={(e) => setTimezone(e.target.value)}
               className="h-9 w-full max-w-sm rounded-md border border-input bg-transparent px-3 font-mono text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30"
             >
-              {TIMEZONES.map((tz) => (
-                <option key={tz} value={tz}>
-                  {tz}
-                </option>
-              ))}
+              {(TIMEZONES.includes(timezone) ? TIMEZONES : [timezone, ...TIMEZONES]).map(
+                (tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                )
+              )}
             </select>
           </Field>
 
