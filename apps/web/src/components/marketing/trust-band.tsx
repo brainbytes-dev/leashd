@@ -10,13 +10,13 @@ interface Pillar {
 const PILLARS: Pillar[] = [
   {
     icon: KeyRound,
-    title: "You hold the keys",
-    body: "leashd never takes custody of your funds and never holds your private keys. Settlement happens on your own rail, between your wallet and the counterparty.",
+    title: "Your keys stay yours",
+    body: "Keys and seeds never leave your machine and never reach the control plane. leashd connects to your wallet locally: a revocable Lightning connection, or a dedicated agent wallet you fund. Settlement is between your wallet and the counterparty.",
   },
   {
     icon: Server,
-    title: "leashd runs locally",
-    body: "Rail connections and secrets stay on your machine. The hosted control plane signs policy and aggregates audit; it never sees a credential.",
+    title: "leashd always runs locally",
+    body: "The agent that holds rail credentials and moves money runs on your own machine, in both the hosted and self-hosted setup. The control plane only signs policy and aggregates audit; it never sees a credential.",
   },
   {
     icon: ShieldCheck,

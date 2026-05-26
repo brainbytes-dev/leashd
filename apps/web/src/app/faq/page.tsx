@@ -42,7 +42,7 @@ const FAQS: QA[] = [
   },
   {
     q: "Is leashd a money transmitter?",
-    a: "No. leashd is non-custodial software that evaluates policy. It is not a bank, exchange, or money transmitter, because it never holds the funds or keys that could move money.",
+    a: "No. leashd is non-custodial software that evaluates policy. It never takes custody: the control plane holds only policy and audit, and leashd moves money solely from your own wallet, under your policy, between you and the counterparty. It is not a bank, exchange, or money transmitter.",
   },
   {
     q: "How does it plug into my agent?",

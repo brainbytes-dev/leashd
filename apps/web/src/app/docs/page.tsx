@@ -112,8 +112,10 @@ export default function DocsPage() {
                 touches a rail.
               </p>
               <p className="text-base leading-relaxed text-muted-foreground">
-                {BRAND} never holds your funds and never sees your keys.
-                Enforcement happens locally in <Mono>leashd</Mono>: it pulls the
+                The control plane never holds your funds and never sees a key:{" "}
+                <Mono>leashd</Mono> holds your wallet connection locally and your
+                keys never leave your machine. Enforcement happens locally in{" "}
+                <Mono>leashd</Mono>: it pulls the
                 signed policy, verifies it, and authorises, caps, or denies each
                 spend on the spot. If the control plane is unreachable,{" "}
                 <Mono>leashd</Mono> keeps enforcing the last verified policy, so
