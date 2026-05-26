@@ -15,6 +15,13 @@
       "when": 1779730721281,
       "tag": "0001_fancy_junta",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779791659693,
+      "tag": "0002_stormy_violations",
+      "breakpoints": true
     }
   ]
 }

@@ -17,6 +17,7 @@ export const users = pgTable("users", {
   emailVerified: boolean("email_verified").default(false).notNull(),
   name: text("name"),
   image: text("image"),
+  timezone: text("timezone").default("UTC"), // IANA zone, user display preference
   role: text("role").default("user").notNull(), // user, admin
   banned: boolean("banned").default(false),
   banReason: text("ban_reason"),

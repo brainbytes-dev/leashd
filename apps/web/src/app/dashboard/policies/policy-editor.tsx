@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TIMEZONES, browserTz } from "@/lib/timezones";
 
 const WINDOWS: BudgetWindow[] = ["task", "hour", "day", "month"];
 const DAYS: { value: number; label: string }[] = [
@@ -33,48 +34,6 @@ const DAYS: { value: number; label: string }[] = [
   { value: 5, label: "Fri" },
   { value: 6, label: "Sat" },
 ];
-
-// Comprehensive fallback if the runtime lacks Intl.supportedValuesOf. Being a
-// fixed list keeps server and client identical (no hydration mismatch) even on
-// a reduced-ICU runtime, while still offering real worldwide coverage.
-const FALLBACK_TZ = [
-  "UTC",
-  "America/Anchorage", "America/Los_Angeles", "America/Denver", "America/Chicago",
-  "America/New_York", "America/Toronto", "America/Mexico_City", "America/Bogota",
-  "America/Lima", "America/Sao_Paulo", "America/Argentina/Buenos_Aires",
-  "Atlantic/Reykjavik", "Europe/London", "Europe/Lisbon", "Europe/Madrid",
-  "Europe/Paris", "Europe/Berlin", "Europe/Zurich", "Europe/Rome",
-  "Europe/Amsterdam", "Europe/Stockholm", "Europe/Warsaw", "Europe/Athens",
-  "Europe/Helsinki", "Europe/Kyiv", "Europe/Istanbul", "Europe/Moscow",
-  "Africa/Casablanca", "Africa/Lagos", "Africa/Johannesburg", "Africa/Nairobi",
-  "Africa/Cairo", "Asia/Jerusalem", "Asia/Riyadh", "Asia/Dubai",
-  "Asia/Tehran", "Asia/Karachi", "Asia/Kolkata", "Asia/Dhaka",
-  "Asia/Bangkok", "Asia/Jakarta", "Asia/Shanghai", "Asia/Hong_Kong",
-  "Asia/Singapore", "Asia/Taipei", "Asia/Tokyo", "Asia/Seoul",
-  "Australia/Perth", "Australia/Sydney", "Pacific/Auckland", "Pacific/Honolulu",
-];
-
-// All IANA zones from the runtime, else the worldwide fallback above.
-function allTimezones(): string[] {
-  try {
-    const fn = (Intl as { supportedValuesOf?: (k: string) => string[] })
-      .supportedValuesOf;
-    const list = fn ? fn("timeZone") : [];
-    if (list.length > FALLBACK_TZ.length) return list;
-  } catch {
-    /* fall through */
-  }
-  return FALLBACK_TZ;
-}
-const TIMEZONES = allTimezones();
-
-function browserTz(): string {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
-  } catch {
-    return "UTC";
-  }
-}
 
 type WindowRow = { days: number[]; start: string; end: string };
 

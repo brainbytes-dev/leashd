@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSession } from "@/lib/auth-client"
 import { updateProfile, changePassword } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
@@ -8,13 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { TIMEZONES } from "@/lib/timezones"
 
 export default function SettingsPage() {
   const { data: session } = useSession()
@@ -23,10 +17,26 @@ export default function SettingsPage() {
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: session?.user?.name || "",
+    timezone: "UTC",
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   })
+
+  // Load the saved timezone preference (async, so no synchronous setState in effect).
+  useEffect(() => {
+    let active = true
+    fetch("/api/leash/profile")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (active && data?.timezone)
+          setFormData((f) => ({ ...f, timezone: data.timezone }))
+      })
+      .catch(() => {})
+    return () => {
+      active = false
+    }
+  }, [])
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,10 +51,19 @@ export default function SettingsPage() {
       const result = await updateProfile({ name: formData.name })
       if (result.error) {
         setError(result.error)
-      } else {
-        setIsSaved(true)
-        setTimeout(() => setIsSaved(false), 2000)
+        return
       }
+      const tzRes = await fetch("/api/leash/profile", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ timezone: formData.timezone }),
+      })
+      if (!tzRes.ok) {
+        setError("Could not save timezone.")
+        return
+      }
+      setIsSaved(true)
+      setTimeout(() => setIsSaved(false), 2000)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update profile")
     } finally {
@@ -138,18 +157,26 @@ export default function SettingsPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="timezone">Timezone</Label>
-                <Select defaultValue="utc">
-                  <SelectTrigger id="timezone" disabled={isLoading}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="utc">UTC</SelectItem>
-                    <SelectItem value="est">Eastern Time</SelectItem>
-                    <SelectItem value="cst">Central Time</SelectItem>
-                    <SelectItem value="mst">Mountain Time</SelectItem>
-                    <SelectItem value="pst">Pacific Time</SelectItem>
-                  </SelectContent>
-                </Select>
+                <select
+                  id="timezone"
+                  value={formData.timezone}
+                  disabled={isLoading}
+                  onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
+                  className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50 dark:bg-input/30"
+                >
+                  {(TIMEZONES.includes(formData.timezone)
+                    ? TIMEZONES
+                    : [formData.timezone, ...TIMEZONES]
+                  ).map((tz) => (
+                    <option key={tz} value={tz}>
+                      {tz}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground">
+                  Your display timezone. Policy time windows have their own zone
+                  per policy.
+                </p>
               </div>
             </div>
 
