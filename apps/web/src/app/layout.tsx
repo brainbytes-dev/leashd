@@ -21,6 +21,9 @@ const plexMono = IBM_Plex_Mono({
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "leashd";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://leashd.dev"
+  ),
   title: {
     default: `${APP_NAME}: Spend governance for AI agents`,
     template: `%s | ${APP_NAME}`,

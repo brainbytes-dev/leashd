@@ -23,9 +23,30 @@ export const metadata: Metadata = {
   },
 };
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://leashd.dev";
+
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "leashd",
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Cross-platform",
+  description:
+    "Non-custodial spend-governance layer for autonomous AI agents. A deterministic policy gate (budget caps, allowlists, rate limits, kill-switch, signed audit) between an AI agent and its Bitcoin payment rail. MCP-native, open-source.",
+  url: BASE_URL,
+  license: "https://www.gnu.org/licenses/agpl-3.0.html",
+  codeRepository: "https://github.com/brainbytes-dev/leashd",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  author: { "@type": "Organization", name: "BrainBytes Studio" },
+};
+
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+      />
       <SiteHeader />
       <main className="flex-1">
         <Hero />
