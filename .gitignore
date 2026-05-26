@@ -36,3 +36,6 @@ templates-mobile/
 packages/*/dist/
 .vercel
 .env*.local
+
+# local observer lock
+.observer.lock
