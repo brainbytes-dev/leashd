@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TIMEZONES, TZ_OPTIONS, browserTz, tzLabel } from "@/lib/timezones";
+import { TIMEZONES, TZ_OPTIONS, tzLabel } from "@/lib/timezones";
 
 const WINDOWS: BudgetWindow[] = ["task", "hour", "day", "month"];
 const DAYS: { value: number; label: string }[] = [
@@ -102,10 +102,12 @@ export function PolicyEditor({
   workspaceId,
   agents,
   existing,
+  defaultTimezone = "UTC",
 }: {
   workspaceId: string;
   agents: AgentOption[];
   existing: ExistingPolicy[];
+  defaultTimezone?: string;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -138,9 +140,9 @@ export function PolicyEditor({
   const [killSwitch, setKillSwitch] = useState(false);
   const [gradedState, setGradedState] = useState<GradedState>("normal");
   const [rails, setRails] = useState<Rail[]>([]);
-  // Deterministic default ("UTC") so SSR and client match; the user picks their
-  // zone from the full list, and resetForm seeds the browser zone client-side.
-  const [timezone, setTimezone] = useState<string>("UTC");
+  // New policies default to the user's account timezone (from the server, so
+  // SSR and client match). Editing an existing policy loads that policy's zone.
+  const [timezone, setTimezone] = useState<string>(defaultTimezone);
   const [windows, setWindows] = useState<WindowRow[]>([]);
 
   function buildSpec(): unknown {
@@ -271,7 +273,7 @@ export function PolicyEditor({
     setKillSwitch(false);
     setGradedState("normal");
     setRails([]);
-    setTimezone(browserTz());
+    setTimezone(defaultTimezone);
     setWindows([]);
   }
 

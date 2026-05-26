@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getDb, eq, desc, agents, policies, type Policy } from "@repo/db";
+import { getDb, eq, desc, agents, policies, users, type Policy } from "@repo/db";
 import { getActiveContext } from "@/lib/leash/server";
 import { PolicyEditor, type ExistingPolicy } from "./policy-editor";
 
@@ -11,8 +11,15 @@ export default async function PoliciesPage() {
 
   let agentOptions: { id: string; name: string }[] = [];
   let existing: Policy[] = [];
+  let defaultTimezone = "UTC";
   if (ctx.workspace) {
     const db = getDb();
+    const [me] = await db
+      .select({ timezone: users.timezone })
+      .from(users)
+      .where(eq(users.id, ctx.userId))
+      .limit(1);
+    defaultTimezone = me?.timezone || "UTC";
     agentOptions = await db
       .select({ id: agents.id, name: agents.name })
       .from(agents)
@@ -39,6 +46,7 @@ export default async function PoliciesPage() {
         <PolicyEditor
           workspaceId={ctx.workspace.id}
           agents={agentOptions}
+          defaultTimezone={defaultTimezone}
           existing={existing.map(
             (p): ExistingPolicy => ({
               id: p.id,
