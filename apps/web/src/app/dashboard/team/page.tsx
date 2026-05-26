@@ -42,7 +42,7 @@ export default async function TeamPage() {
 
       {!ctx.workspace ? (
         <p className="font-sans text-sm text-muted-foreground">
-          Create a workspace first.
+          Create a workspace on the Overview page first.
         </p>
       ) : (
         <TeamClient

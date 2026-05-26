@@ -9,7 +9,6 @@ import {
   AlertTriangle,
   HelpCircle,
   ArrowRight,
-  Plus,
 } from "lucide-react";
 import {
   getDb,
@@ -35,6 +34,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CreateWorkspace } from "./create-workspace";
 
 export const dynamic = "force-dynamic";
 
@@ -125,12 +125,7 @@ export default async function OverviewPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button asChild>
-              <Link href="/dashboard/agents">
-                <Plus aria-hidden />
-                Get started
-              </Link>
-            </Button>
+            <CreateWorkspace />
           </CardContent>
         </Card>
       </main>

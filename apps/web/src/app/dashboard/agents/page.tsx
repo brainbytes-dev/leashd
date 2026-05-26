@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getDb, eq, desc, agents } from "@repo/db";
 import { getActiveContext } from "@/lib/leash/server";
@@ -49,8 +50,13 @@ export default async function AgentsPage() {
 function EmptyWorkspace() {
   return (
     <p className="font-sans text-sm text-muted-foreground">
-      Create a workspace via{" "}
-      <code className="font-mono text-foreground">POST /api/leash/workspaces</code>{" "}
+      Create a workspace on the{" "}
+      <Link
+        href="/dashboard"
+        className="rounded text-primary underline-offset-2 outline-none hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        Overview
+      </Link>{" "}
       to begin.
     </p>
   );

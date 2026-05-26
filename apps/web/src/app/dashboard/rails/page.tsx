@@ -41,7 +41,7 @@ export default async function RailsPage() {
         <RailsClient workspaceId={ctx.workspace.id} rails={rows} />
       ) : (
         <p className="font-sans text-sm text-muted-foreground">
-          Create a workspace first.
+          Create a workspace on the Overview page first.
         </p>
       )}
     </main>
