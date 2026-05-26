@@ -109,7 +109,7 @@ export function NavUser({
                 Settings
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => router.push("/dashboard/billing")}
+                onClick={() => router.push("/dashboard/settings/billing")}
               >
                 <CreditCard aria-hidden />
                 Billing

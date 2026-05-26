@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation"
 import {
   Bot,
   Cable,
-  CreditCard,
   LayoutDashboard,
   ScrollText,
   Settings,
@@ -34,11 +33,10 @@ const navMain = [
   { title: "Policies", url: "/dashboard/policies", icon: ShieldCheck },
   { title: "Audit", url: "/dashboard/audit", icon: ScrollText },
   { title: "Rails", url: "/dashboard/rails", icon: Cable },
-  { title: "Team", url: "/dashboard/team", icon: Users },
 ] as const
 
 const navSecondary = [
-  { title: "Billing", url: "/dashboard/billing", icon: CreditCard },
+  { title: "Team", url: "/dashboard/team", icon: Users },
   { title: "Settings", url: "/dashboard/settings", icon: Settings },
 ] as const
 

@@ -57,7 +57,7 @@ export async function sendPaymentFailedEmail(email: string) {
         <p>Hi,</p>
         <p>We tried to process your subscription payment but it failed.</p>
         <p>Please update your payment method in your account settings.</p>
-        <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing">Update Payment Method</a>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings/billing">Update Payment Method</a>
       `,
     });
     return result;
