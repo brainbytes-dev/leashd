@@ -6,6 +6,7 @@ const base: PolicySpec = {
   version: 1,
   defaultDecision: "deny",
   budgets: [],
+  timezone: "UTC",
   timeWindows: [],
   killSwitch: false,
   gradedState: "normal",
@@ -91,5 +92,43 @@ describe("evaluatePolicy", () => {
       rails: ["cashu"],
     };
     expect(evaluatePolicy(spec, req(), zeroState).decision).toBe("denied");
+  });
+
+  describe("time windows (timezone-aware)", () => {
+    const allowEndpoint = { endpoints: ["https://api.example.com/x"] };
+    // A fixed instant: 2026-05-24 22:30 UTC = 2026-05-25 00:30 in Europe/Zurich (+02:00 DST).
+    const ts = Date.UTC(2026, 4, 24, 22, 30, 0);
+    const window = [{ days: [0, 1, 2, 3, 4, 5, 6], startMinute: 0, endMinute: 60 }]; // 00:00–01:00
+
+    it("allows inside the window evaluated in the policy timezone", () => {
+      // 00:30 Zurich on Sunday(=0, since it's the 25th) is inside 00:00–01:00.
+      const spec: PolicySpec = {
+        ...base,
+        allow: { ...allowEndpoint },
+        timezone: "Europe/Zurich",
+        timeWindows: window,
+      };
+      expect(evaluatePolicy(spec, req({ ts }), zeroState).decision).toBe("allowed");
+    });
+
+    it("denies the same instant when evaluated in UTC (22:30 is outside 00:00–01:00)", () => {
+      const spec: PolicySpec = {
+        ...base,
+        allow: { ...allowEndpoint },
+        timezone: "UTC",
+        timeWindows: window,
+      };
+      expect(evaluatePolicy(spec, req({ ts }), zeroState).decision).toBe("denied");
+    });
+
+    it("fail-closed on an invalid timezone", () => {
+      const spec: PolicySpec = {
+        ...base,
+        allow: { ...allowEndpoint },
+        timezone: "Not/AZone",
+        timeWindows: window,
+      };
+      expect(evaluatePolicy(spec, req({ ts }), zeroState).decision).toBe("denied");
+    });
   });
 });

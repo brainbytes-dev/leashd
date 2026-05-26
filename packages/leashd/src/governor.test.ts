@@ -42,6 +42,7 @@ const allowPolicy: PolicySpec = {
   allow: { lightningAddresses: ["alice@example.com"] },
   budgets: [{ window: "day", cap: { unit: "sat", value: 10_000 } }],
   perTxMax: { unit: "sat", value: 5_000 },
+  timezone: "UTC",
   timeWindows: [],
   killSwitch: false,
   gradedState: "normal",

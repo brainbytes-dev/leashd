@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Save, ShieldAlert, Pencil, Trash2, Check, X, FilePlus } from "lucide-react";
+import { Save, ShieldAlert, Pencil, Trash2, Check, X, FilePlus, Plus } from "lucide-react";
 import {
   PolicySpec,
   type BudgetWindow,
@@ -24,6 +24,54 @@ import {
 } from "@/components/ui/select";
 
 const WINDOWS: BudgetWindow[] = ["task", "hour", "day", "month"];
+const DAYS: { value: number; label: string }[] = [
+  { value: 0, label: "Sun" },
+  { value: 1, label: "Mon" },
+  { value: 2, label: "Tue" },
+  { value: 3, label: "Wed" },
+  { value: 4, label: "Thu" },
+  { value: 5, label: "Fri" },
+  { value: 6, label: "Sat" },
+];
+
+// All IANA zones; native <select> gives keyboard typeahead over the long list.
+function allTimezones(): string[] {
+  try {
+    const fn = (Intl as { supportedValuesOf?: (k: string) => string[] })
+      .supportedValuesOf;
+    if (fn) return fn("timeZone");
+  } catch {
+    /* fall through */
+  }
+  return ["UTC"];
+}
+const TIMEZONES = allTimezones();
+
+function browserTz(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch {
+    return "UTC";
+  }
+}
+
+type WindowRow = { days: number[]; start: string; end: string };
+
+function hhmmToMin(v: string): number | null {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(v.trim());
+  if (!m) return null;
+  const h = Number(m[1]);
+  const min = Number(m[2]);
+  if (h > 24 || min > 59) return null;
+  const total = h * 60 + min;
+  return total >= 0 && total <= 1440 ? total : null;
+}
+
+function minToHHMM(min: number): string {
+  const h = Math.floor(min / 60) % 24;
+  const m = min % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
 const RAILS: { value: Rail; label: string }[] = [
   { value: "lightning_nwc", label: "Lightning / NWC" },
   { value: "cashu", label: "Cashu" },
@@ -110,6 +158,8 @@ export function PolicyEditor({
   const [killSwitch, setKillSwitch] = useState(false);
   const [gradedState, setGradedState] = useState<GradedState>("normal");
   const [rails, setRails] = useState<Rail[]>([]);
+  const [timezone, setTimezone] = useState<string>(browserTz);
+  const [windows, setWindows] = useState<WindowRow[]>([]);
 
   function buildSpec(): unknown {
     const allow = {
@@ -141,7 +191,13 @@ export function PolicyEditor({
         rateMaxN > 0 && rateWinN > 0
           ? { maxPerWindow: Math.round(rateMaxN), windowSeconds: Math.round(rateWinN) }
           : undefined,
-      timeWindows: [],
+      timezone,
+      timeWindows: windows.flatMap((w) => {
+        const startMinute = hhmmToMin(w.start);
+        const endMinute = hhmmToMin(w.end);
+        if (w.days.length === 0 || startMinute === null || endMinute === null) return [];
+        return [{ days: [...w.days].sort((a, b) => a - b), startMinute, endMinute }];
+      }),
       approvalThreshold: amount(approval, unit),
       killSwitch,
       gradedState,
@@ -183,6 +239,38 @@ export function PolicyEditor({
     setRails((prev) => (prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]));
   }
 
+  function addWindow() {
+    setWindows((prev) => [
+      ...prev,
+      { days: [1, 2, 3, 4, 5], start: "09:00", end: "17:00" },
+    ]);
+  }
+
+  function removeWindow(i: number) {
+    setWindows((prev) => prev.filter((_, idx) => idx !== i));
+  }
+
+  function toggleWindowDay(i: number, day: number) {
+    setWindows((prev) =>
+      prev.map((w, idx) =>
+        idx === i
+          ? {
+              ...w,
+              days: w.days.includes(day)
+                ? w.days.filter((d) => d !== day)
+                : [...w.days, day],
+            }
+          : w
+      )
+    );
+  }
+
+  function setWindowTime(i: number, field: "start" | "end", value: string) {
+    setWindows((prev) =>
+      prev.map((w, idx) => (idx === i ? { ...w, [field]: value } : w))
+    );
+  }
+
   function resetForm() {
     setName("default-policy");
     setAgentId("__workspace__");
@@ -202,6 +290,8 @@ export function PolicyEditor({
     setKillSwitch(false);
     setGradedState("normal");
     setRails([]);
+    setTimezone(browserTz());
+    setWindows([]);
   }
 
   function newPolicy() {
@@ -243,6 +333,14 @@ export function PolicyEditor({
     setKillSwitch(s.killSwitch);
     setGradedState(s.gradedState);
     setRails(s.rails);
+    setTimezone(s.timezone || "UTC");
+    setWindows(
+      s.timeWindows.map((w) => ({
+        days: w.days,
+        start: minToHHMM(w.startMinute),
+        end: minToHHMM(w.endMinute),
+      }))
+    );
     setMsg(null);
     setDeletingId(null);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
@@ -507,6 +605,103 @@ export function PolicyEditor({
               </SelectContent>
             </Select>
           </Field>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
+          <CardTitle className="font-mono text-base">Time windows</CardTitle>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="cursor-pointer"
+            onClick={addWindow}
+          >
+            <Plus className="size-4" aria-hidden />
+            Add window
+          </Button>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <Field label="Timezone" htmlFor="pol-tz">
+            <select
+              id="pol-tz"
+              value={timezone}
+              onChange={(e) => setTimezone(e.target.value)}
+              className="h-9 w-full max-w-sm rounded-md border border-input bg-transparent px-3 font-mono text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30"
+            >
+              {TIMEZONES.map((tz) => (
+                <option key={tz} value={tz}>
+                  {tz}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          {windows.length === 0 ? (
+            <p className="font-sans text-sm text-muted-foreground">
+              No windows: the agent may spend at any time. Add one to restrict
+              spending to specific days and hours (evaluated in the timezone
+              above).
+            </p>
+          ) : (
+            <ul className="flex flex-col gap-3">
+              {windows.map((w, i) => (
+                <li
+                  key={i}
+                  className="flex flex-wrap items-center gap-3 rounded-md border border-border p-3"
+                >
+                  <div className="flex flex-wrap gap-1">
+                    {DAYS.map((d) => {
+                      const on = w.days.includes(d.value);
+                      return (
+                        <button
+                          key={d.value}
+                          type="button"
+                          aria-pressed={on}
+                          onClick={() => toggleWindowDay(i, d.value)}
+                          className={`cursor-pointer rounded-md border px-2 py-1 font-mono text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                            on
+                              ? "border-primary bg-primary/15 text-foreground"
+                              : "border-border text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {d.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="time"
+                      aria-label="Start time"
+                      className="w-32 font-mono tabular-nums"
+                      value={w.start}
+                      onChange={(e) => setWindowTime(i, "start", e.target.value)}
+                    />
+                    <span className="font-mono text-xs text-muted-foreground">to</span>
+                    <Input
+                      type="time"
+                      aria-label="End time"
+                      className="w-32 font-mono tabular-nums"
+                      value={w.end}
+                      onChange={(e) => setWindowTime(i, "end", e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    size="icon-sm"
+                    variant="secondary"
+                    aria-label="Remove window"
+                    className="ml-auto cursor-pointer"
+                    onClick={() => removeWindow(i)}
+                  >
+                    <Trash2 className="size-4 text-deny" aria-hidden />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
 

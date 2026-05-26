@@ -67,7 +67,7 @@ export function evaluatePolicy(
   }
 
   // 5. Time window.
-  if (spec.timeWindows.length > 0 && !withinTimeWindow(spec.timeWindows, req.ts)) {
+  if (spec.timeWindows.length > 0 && !withinTimeWindow(spec.timeWindows, req.ts, spec.timezone)) {
     return {
       decision: "denied",
       reasons: ["outside permitted time window"],
@@ -151,13 +151,54 @@ function matchesList(list: ListShape, req: PaymentRequest): boolean {
   return false;
 }
 
+const WEEKDAY_INDEX: Record<string, number> = {
+  Sun: 0,
+  Mon: 1,
+  Tue: 2,
+  Wed: 3,
+  Thu: 4,
+  Fri: 5,
+  Sat: 6,
+};
+
+/**
+ * Wall-clock day-of-week (0=Sun) and minute-of-day for `ts` in an IANA zone,
+ * via Intl (the tz database ships with the runtime). Deterministic: same ts +
+ * tz always yield the same parts. Returns null if the zone is invalid.
+ */
+function zonedDayMinute(ts: number, timezone: string): { day: number; minute: number } | null {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).formatToParts(new Date(ts));
+    let day = -1;
+    let hour = 0;
+    let min = 0;
+    for (const p of parts) {
+      if (p.type === "weekday") day = WEEKDAY_INDEX[p.value] ?? -1;
+      else if (p.type === "hour") hour = Number(p.value) % 24; // some envs emit "24" at midnight
+      else if (p.type === "minute") min = Number(p.value);
+    }
+    if (day < 0) return null;
+    return { day, minute: hour * 60 + min };
+  } catch {
+    return null;
+  }
+}
+
 function withinTimeWindow(
   windows: PolicySpec["timeWindows"],
-  ts: number
+  ts: number,
+  timezone: string
 ): boolean {
-  const d = new Date(ts);
-  const day = d.getUTCDay();
-  const minute = d.getUTCHours() * 60 + d.getUTCMinutes();
+  const zoned = zonedDayMinute(ts, timezone);
+  // Fail-closed: an unresolvable zone on a time-restricted policy is not "open".
+  if (!zoned) return false;
+  const { day, minute } = zoned;
   for (const w of windows) {
     if (!w.days.includes(day)) continue;
     if (w.startMinute <= w.endMinute) {

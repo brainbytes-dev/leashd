@@ -58,7 +58,12 @@ export const PolicySpec = z
     rateLimit: z
       .object({ maxPerWindow: z.number().int().positive(), windowSeconds: z.number().int().positive() })
       .optional(),
-    /** Allowed UTC time windows; empty = always allowed. */
+    /**
+     * IANA timezone the time windows are expressed in (e.g. "Europe/Zurich").
+     * Days and minutes below are wall-clock in THIS zone. Default UTC.
+     */
+    timezone: z.string().default("UTC"),
+    /** Allowed time windows (wall-clock in `timezone`); empty = always allowed. */
     timeWindows: z
       .array(
         z.object({
