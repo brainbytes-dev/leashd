@@ -2,6 +2,8 @@
 
 _Working title "Leash" — not final. Status: design, pre-build. Date: 2026-05-23._
 
+> **Superseded (2026-05-26):** the product shipped as **leashd** and is now **Bitcoin-only**. The x402 / USDC / ERC-4337 / stablecoin rail described below was dropped entirely. Rails are Lightning (NWC / L402) and Cashu ecash only. Treat every "x402 / stablecoin / multi-rail incl. stablecoin" mention in this historical doc as removed.
+
 ## 1. Summary
 
 Leash is a **non-custodial spend-governance layer for autonomous AI agents.** It gives agents money with hard guardrails: budget caps, scoped credentials, allowlists, rate limits, graded shutdown, approval thresholds, and an immutable audit trail. Multi-rail, BTC-first (Lightning/L402, Cashu) with stablecoin (x402/USDC) support.

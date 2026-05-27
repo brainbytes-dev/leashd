@@ -6,7 +6,8 @@ import { z } from "zod";
  * policy engine stays exact (no floats).
  */
 
-export const MoneyUnit = z.enum(["sat", "usd_cent"]);
+// Bitcoin-only: sats are the single unit of account.
+export const MoneyUnit = z.enum(["sat"]);
 export type MoneyUnit = z.infer<typeof MoneyUnit>;
 
 export const Amount = z.object({

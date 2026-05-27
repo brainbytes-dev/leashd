@@ -1,6 +1,6 @@
 # Leash — DESIGN.md
 
-The visual contract for Leash. Read before writing any UI. Leash is a non-custodial spend-governance layer for AI agents (Bitcoin/Lightning + stablecoin). The product must feel like precise, trustworthy developer infrastructure: a calm control room for money your agents spend. Not a flashy crypto landing.
+The visual contract for Leash. Read before writing any UI. Leash is a non-custodial spend-governance layer for AI agents (Bitcoin-only: Lightning + Cashu). The product must feel like precise, trustworthy developer infrastructure: a calm control room for money your agents spend. Not a flashy crypto landing.
 
 ## 1. Visual Theme & Atmosphere
 

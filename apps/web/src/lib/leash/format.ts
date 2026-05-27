@@ -3,8 +3,7 @@ import type { Amount, Decision } from "@repo/leash-core";
 /** Render an Amount as a mono-friendly string with tabular grouping. */
 export function formatAmount(amount: Amount | null | undefined): string {
   if (!amount) return "—";
-  const grouped = amount.value.toLocaleString("en-US");
-  return amount.unit === "sat" ? `${grouped} sat` : `$${(amount.value / 100).toFixed(2)}`;
+  return `${amount.value.toLocaleString("en-US")} sat`;
 }
 
 /** Semantic Tailwind text color per decision (paired with an icon + label in UI). */
