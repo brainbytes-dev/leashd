@@ -15,7 +15,8 @@
     "demo": "NODE_NO_WARNINGS=1 tsx src/demo.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "x402": "NODE_NO_WARNINGS=1 tsx src/x402-cli.ts"
   },
   "dependencies": {
     "@cashu/cashu-ts": "^4.5.1",
