@@ -14,9 +14,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Must stay in sync with NETWORKS in packages/leashd/src/rails/x402-wiring.ts.
 const USDC: Record<number, `0x${string}`> = {
   8453: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
   84532: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  1: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
 };
 
 type Granted = Awaited<ReturnType<typeof requestSpendPermission>>;
@@ -59,6 +61,42 @@ export function GrantClient() {
     }
   }
 
+  /** Save the permission to a file locally. Nothing is uploaded. */
+  function download(p: Granted) {
+    setError(null);
+    try {
+      const url = URL.createObjectURL(
+        new Blob([serialise(p)], { type: "application/json" })
+      );
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `leash-x402-permission-${chainId}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  /**
+   * Clipboard access is unavailable in an insecure context and can be denied by
+   * permission, so surface the failure instead of dropping it on the floor.
+   */
+  function copy(p: Granted) {
+    setError(null);
+    const failed = (e: unknown) =>
+      setError(
+        `Could not copy to clipboard (${e instanceof Error ? e.message : String(e)}). Use Download JSON instead.`
+      );
+    try {
+      navigator.clipboard.writeText(serialise(p)).catch(failed);
+    } catch (e) {
+      failed(e);
+    }
+  }
+
   async function revoke() {
     if (!granted || !provider) return;
     try {
@@ -85,6 +123,7 @@ export function GrantClient() {
           <SelectContent>
             <SelectItem value="8453">Base (eip155:8453)</SelectItem>
             <SelectItem value="84532">Base Sepolia (eip155:84532)</SelectItem>
+            <SelectItem value="1">Ethereum (eip155:1)</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -121,9 +160,13 @@ export function GrantClient() {
             {serialise(granted)}
           </pre>
           <div className="flex gap-2">
+            <Button className="cursor-pointer" onClick={() => download(granted)}>
+              Download JSON
+            </Button>
             <Button
               className="cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(serialise(granted))}
+              variant="outline"
+              onClick={() => copy(granted)}
             >
               Copy JSON
             </Button>
