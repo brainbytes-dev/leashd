@@ -1,8 +1,18 @@
 import type { Amount, Decision } from "@repo/leash-core";
 
-/** Render an Amount as a mono-friendly string with tabular grouping. */
+/**
+ * Render an Amount as a mono-friendly string in its own minor unit.
+ * sats stay integers with tabular grouping; usd_cent renders as dollars
+ * (same two-decimal `$` convention as leashd's x402 CLI and the rails list).
+ */
 export function formatAmount(amount: Amount | null | undefined): string {
   if (!amount) return "—";
+  if (amount.unit === "usd_cent") {
+    return `$${(amount.value / 100).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  }
   return `${amount.value.toLocaleString("en-US")} sat`;
 }
 
