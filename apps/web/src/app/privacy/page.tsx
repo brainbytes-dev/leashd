@@ -412,9 +412,19 @@ export default function PrivacyPage() {
         <LI>
           You provide connection settings (e.g. a Lightning node URI with a{" "}
           <Strong>scoped, spend-limited</Strong> macaroon, an NWC connection
-          string, a Cashu mint URL, or a granted x402 Spend Permission for
-          USDC on EVM networks). These are
-          encrypted at rest (Section 5).
+          string, or a Cashu mint URL). These are encrypted at rest (Section 5).
+        </LI>
+        <LI>
+          For x402 (USDC on EVM networks), the signed Spend Permission itself{" "}
+          <Strong>never leaves your own browser and machine</Strong>: it is
+          granted client-side on the grant page, saved to a file on your device,
+          and read only by your local leashd. We never receive it. What you may
+          choose to record with us is <Strong>metadata only</Strong>: the
+          network, the agent address, the permission hash (if your wallet
+          returns one), the allowance amount, the period, and the expiry, so the
+          dashboard can display and reason about the binding. The same holds for
+          the agent&apos;s private key: it is generated and stored on your machine
+          and is never transmitted to us.
         </LI>
         <LI>
           leashd uses these <Strong>only</Strong> to (a) read the state needed for
