@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createBaseAccountSDK, type ProviderInterface } from "@base-org/account";
-import { requestSpendPermission, requestRevoke } from "@base-org/account/spend-permission";
+import type { requestSpendPermission } from "@base-org/account/spend-permission";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,6 +40,11 @@ export function GrantClient() {
   async function grant() {
     setError(null);
     try {
+      // Dynamic import: @base-org/account/spend-permission's Node build (what
+      // Next.js resolves while analyzing this client component during the
+      // server build) omits the browser-only wallet-interaction exports. A
+      // runtime import forces bundling for the browser instead.
+      const { requestSpendPermission } = await import("@base-org/account/spend-permission");
       const sdk = createBaseAccountSDK({ appName: "leashd", appChainIds: [chainId] });
       const activeProvider = sdk.getProvider();
       setProvider(activeProvider);
@@ -100,6 +105,7 @@ export function GrantClient() {
   async function revoke() {
     if (!granted || !provider) return;
     try {
+      const { requestRevoke } = await import("@base-org/account/spend-permission");
       await requestRevoke({ provider, permission: granted });
       setGranted(null);
     } catch (e) {
