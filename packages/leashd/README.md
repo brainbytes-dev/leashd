@@ -22,10 +22,20 @@ the control plane cannot move your funds. The control plane signs policies;
 - **Deterministic policy engine** (from `@repo/leash-core`): budget caps
   (task/hour/day/month), per-transaction max, allow/deny lists, rate limits,
   time windows, approval thresholds, kill switch, graded shutdown.
-- **Lightning rail** over NWC (NIP-47) via `@getalby/sdk`, plus a **Cashu**
-  ecash rail (melt to settle a Lightning invoice). Bitcoin-only by design.
+- **Lightning rail** over NWC (NIP-47) via `@getalby/sdk`, a **Cashu** ecash
+  rail (melt to settle a Lightning invoice), and an **x402 / USDC** rail on
+  Base and Ethereum, funded non-custodially by a Base Account Spend
+  Permission granted from your own wallet.
 - **Local SQLite** spend ledger + signed audit log (the record of truth), pushed
   best-effort to the control plane (queued locally when offline).
+
+## Rails
+
+| Rail | Funding | Chain-side cap |
+|---|---|---|
+| Lightning (NWC) | your node / Alby Hub | NWC connection budget |
+| Cashu | mint proofs in the local store | balance |
+| x402 / USDC | Base Account Spend Permission (or manual) | allowance per period |
 
 ## Install
 
@@ -46,11 +56,37 @@ Config comes from environment variables, overlaid on an optional
 | `LEASH_AGENT_TOKEN` | yes | Bearer token for audit push. |
 | `LEASH_CONTROL_PLANE_PUBKEY` | for policy | ed25519 public key (base64 SPKI DER) used to verify signed policies. Without it, all payments fail closed. |
 | `LEASH_NWC_URL` | for Lightning | NWC connection string (`nostr+walletconnect://...`). Secret — never leaves the device. |
+| `LEASH_CASHU_MINT_URL` | for Cashu | Cashu mint URL. Balance/proofs stay local. |
+| `LEASH_X402_NETWORK` | for x402 | CAIP-2 network id: `eip155:8453` (Base) or `eip155:1` (Ethereum). |
+| `LEASH_X402_PRIVATE_KEY` | for x402 | Agent key, 0x-prefixed 32-byte hex. Generate with `pnpm --filter @repo/leashd x402 keygen`. Secret — never leaves the device. |
+| `LEASH_X402_RPC_URL` | for x402 | EVM RPC endpoint for the chosen network. |
+| `LEASH_X402_FUNDING` | for x402 | `base-spend-permission` (pull on shortfall, non-custodial) or `manual` (owner transfers by hand). |
+| `LEASH_X402_PERMISSION_PATH` | for x402 | Path to the granted Spend Permission JSON, downloaded from `/dashboard/rails/x402/grant`. Required when `LEASH_X402_FUNDING=base-spend-permission`. |
+| `LEASH_X402_OWNER_ADDRESS` | for x402 | The owner wallet address that granted the Spend Permission. |
 | `LEASH_DB_PATH` | no | SQLite path. Default `~/.leashd/leashd.db`. |
 | `LEASH_SIGNING_KEY_PATH` | no | Path to leashd's ed25519 signing key (PEM). Auto-generated on first run. |
 | `LEASH_HOME` | no | Config/state directory. Default `~/.leashd`. |
 
 `leashd` generates and persists its own ed25519 signing identity on first run.
+
+### Funding the x402 rail
+
+```bash
+# 1. Generate a local agent key (private key never leaves this machine)
+pnpm --filter @repo/leashd x402 keygen
+
+# 2. Grant a Spend Permission from your own wallet — client-side, no server involved
+open https://leashd.dev/dashboard/rails/x402/grant
+
+# 3. Set LEASH_X402_NETWORK / LEASH_X402_PRIVATE_KEY / LEASH_X402_RPC_URL /
+#    LEASH_X402_FUNDING / LEASH_X402_PERMISSION_PATH / LEASH_X402_OWNER_ADDRESS
+#    per the table above, then check status anytime:
+pnpm --filter @repo/leashd x402 status
+```
+
+Gas: a `spend()` call measures roughly 186,880 gas in the contract's own gas snapshot — about
+**$0.0027 on Base** and **$0.083 on Ethereum mainnet** at the fees recorded in
+`docs/x402-spikes.md` (Step 2). Point-in-time estimates, not a promise.
 
 ## Wire into Claude Code
 

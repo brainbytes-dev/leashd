@@ -25,8 +25,12 @@ const FAQS: QA[] = [
     a: "On your own machine. leashd holds the wallet connection and any secrets locally. The hosted control plane signs policy and aggregates audit, and never sees a credential.",
   },
   {
-    q: "Which rails are supported?",
-    a: "Bitcoin Lightning and L402, plus Cashu ecash. Bind rails with priority and fall back when one is unavailable. leashd is Bitcoin-only by design: no EVM, no stablecoins, no altcoins.",
+    q: "Why both Bitcoin rails and USDC?",
+    a: "Agents already pay on both. Lightning and Cashu handle Bitcoin-native, sub-cent, instant payments; x402/USDC on Base and Ethereum covers the growing set of AI-agent APIs and marketplaces that settle in USDC. leashd's policy engine is rail-agnostic: the same budget caps, allowlists, rate limits, and audit trail apply no matter which rail an agent pays on. Bind rails with priority and fall back when one is unavailable.",
+  },
+  {
+    q: "What does the chain enforce vs. what does leashd enforce?",
+    a: "Two layers, kept apart. The chain guarantees, independent of leashd, for the x402 rail: loss per period never exceeds the allowance the owner wallet granted, lifetime spend never exceeds the permission's expiry, and it is revocable from the owner wallet at any time. leashd guarantees the rest, deterministically, in software, on every rail: per-transaction max, endpoint and domain allowlists, rate limits, time windows, an approval threshold, and a signed, append-only audit trail. What neither layer guarantees: within a single period, a fully compromised host running leashd can still spend that period's allowance. Pick a period and allowance you can afford to lose.",
   },
   {
     q: "Does it cost anything?",

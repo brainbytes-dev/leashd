@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
   },
   description:
-    "Give your AI agents money. Keep them on a leash. Non-custodial spend governance: budget caps, scoped credentials, audit trails, kill-switch. Bitcoin Lightning and Cashu ecash. Bitcoin-only.",
+    "Non-custodial spend governance for AI agents. Hard budgets, allowlists, audit trail. Lightning, Cashu and x402/USDC, on-chain enforced where the rail allows.",
 };
 
 export default function RootLayout({

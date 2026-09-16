@@ -53,7 +53,7 @@ export default function PrivacyPage() {
         <LI>Payment Processing for Your Subscription (Stripe)</LI>
         <LI>Transactional Email (Resend)</LI>
         <LI>Web Analytics</LI>
-        <LI>Connected Payment Rails (Lightning / Cashu)</LI>
+        <LI>Connected Payment Rails (Lightning / Cashu / x402)</LI>
         <LI>Use of Cookies and Local Storage</LI>
         <LI>Do Not Track and Global Privacy Control</LI>
         <LI>Age Requirements</LI>
@@ -99,7 +99,8 @@ export default function PrivacyPage() {
           <Strong>Connection settings for your own payment rails:</Strong> the
           configuration you enter to let leashd enforce policy against your rails,
           for example a Lightning node connection URI / macaroon reference, an
-          NWC connection string, or a Cashu mint URL.
+          NWC connection string, a Cashu mint URL, or a granted x402 Spend
+          Permission for USDC on EVM networks.
           See Sections 4 and 17 for the strict non-custodial boundary.
         </LI>
         <LI>
@@ -172,7 +173,7 @@ export default function PrivacyPage() {
       <UL>
         <LI>
           We <Strong>never</Strong> take custody of your funds, your bitcoin,
-          your sats, or any balance.
+          your sats, your USDC via x402 on EVM networks, or any balance.
         </LI>
         <LI>
           We <Strong>never</Strong> hold, generate, escrow, or have unilateral
@@ -402,7 +403,7 @@ export default function PrivacyPage() {
         third-party tracking script.
       </P>
 
-      <H2>17. Connected Payment Rails (Lightning / Cashu)</H2>
+      <H2>17. Connected Payment Rails (Lightning / Cashu / x402)</H2>
       <P>
         When you connect a payment rail so leashd can enforce policy, the
         following applies:
@@ -411,7 +412,8 @@ export default function PrivacyPage() {
         <LI>
           You provide connection settings (e.g. a Lightning node URI with a{" "}
           <Strong>scoped, spend-limited</Strong> macaroon, an NWC connection
-          string, or a Cashu mint URL). These are
+          string, a Cashu mint URL, or a granted x402 Spend Permission for
+          USDC on EVM networks). These are
           encrypted at rest (Section 5).
         </LI>
         <LI>

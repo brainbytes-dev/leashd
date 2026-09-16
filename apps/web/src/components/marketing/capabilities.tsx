@@ -4,6 +4,7 @@ import {
   PowerOff,
   Plug,
   Clock,
+  Link2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -35,9 +36,9 @@ const CORE_FEATURES: CoreFeature[] = [
   },
   {
     illustration: "/illustrations/feature-rails.svg",
-    alt: "A Lightning bolt and a Cashu ecash coin routed through a single green checkpoint.",
-    title: "Bitcoin-only, multi-rail",
-    body: "Bitcoin Lightning and L402, plus Cashu ecash. No EVM, no stablecoins, no shitcoins. Bind rails with priority and fall back when one is unavailable.",
+    alt: "A Lightning bolt, a Cashu ecash coin, and an x402 payment icon routed through a single green checkpoint.",
+    title: "Multi-rail",
+    body: "Lightning (NWC), Cashu, and x402 / USDC (Base, Ethereum). Bind rails with priority and fall back when one is unavailable.",
   },
 ];
 
@@ -72,6 +73,11 @@ const MORE_CAPABILITIES: Capability[] = [
     icon: Plug,
     title: "MCP-native",
     body: "leashd ships as an MCP server exposing a policy-gated pay tool. Drop it into Claude Code or any MCP host.",
+  },
+  {
+    icon: Link2,
+    title: "On-chain enforced budgets",
+    body: "For x402 the owner wallet grants a per-period allowance. leashd can never pull more than that, and you can revoke it any time.",
   },
 ];
 

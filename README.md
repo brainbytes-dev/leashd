@@ -2,11 +2,12 @@
   <img src="./.github/banner.svg" alt="leashd" width="100%">
 </p>
 
-<h3 align="center">Give your AI agents money. Keep them on a leash.</h3>
+<h3 align="center">Give your agents money. Keep the leash.</h3>
 
 <p align="center">
-  Non-custodial spend governance for autonomous AI agents.<br/>
-  Budget caps, scoped credentials, kill-switch, signed audit trail. Bitcoin Lightning and Cashu ecash, Bitcoin-only. MCP-native.
+  Non-custodial spend governance for AI agents.<br/>
+  Hard budgets, allowlists, rate limits, time windows, graded shutdown, signed audit trail.<br/>
+  Lightning (NWC), Cashu and x402/USDC on Base and Ethereum.
 </p>
 
 <p align="center">
@@ -27,6 +28,24 @@
 </p>
 
 ---
+
+## What the chain guarantees, what leashd guarantees, what nobody guarantees
+
+- **Chain (x402):** the owner wallet grants a Spend Permission: at most `allowance` USDC per `period`,
+  until `end`, revocable any time. leashd's agent key can never hold more than one period.
+- **leashd (all rails):** per-transaction max, endpoint/domain allowlists, rate limit, time windows,
+  approval threshold, kill switch and graded shutdown, signed append-only audit. Deterministic; a
+  prompt cannot talk it out of a decision.
+- **Not guaranteed:** within one period, a fully compromised host running leashd can spend that period's
+  allowance. Pick the period and allowance you can afford to lose.
+
+## Rails
+
+| Rail | Funding | Chain-side cap |
+|---|---|---|
+| Lightning (NWC) | your node / Alby Hub | NWC connection budget |
+| Cashu | mint proofs in the local store | balance |
+| x402 / USDC | Base Account Spend Permission (or manual) | allowance per period |
 
 ## The problem
 
@@ -59,7 +78,7 @@ The agent never gets your wallet. It gets a policy-gated `pay` tool over MCP tha
 | Approval thresholds | human-in-the-loop above a value you set |
 | Graded shutdown | a dimmer, not just a kill-switch: attenuate scope, drop tools, escalate approvals |
 | Signed audit trail | append-only, tamper-evident, exportable. EU AI Act Article 12 grade |
-| Multi-rail | Bitcoin Lightning and L402, plus Cashu ecash. Bitcoin-only, no EVM or altcoins |
+| Multi-rail | Lightning (NWC) and L402, Cashu ecash, x402/USDC on Base and Ethereum |
 | MCP-native | drops into Claude Code or any MCP host |
 
 ## Quickstart
@@ -118,10 +137,54 @@ You hold the keys. leashd holds the policy. The control plane stores only polici
 
 - [x] Lightning / L402 rail, policy engine, MCP server, signed audit
 - [x] Cashu ecash rail
+- [x] x402 / USDC rail (Base + Ethereum), on-chain enforced Spend Permissions
 - [x] Team and RBAC, audit CSV export
 - [ ] Approval workflow UI, alerting, long audit retention
 
-Bitcoin-only by design. No EVM, stablecoin, or altcoin rails. Ever.
+## Funding the x402 rail
+
+x402/USDC is funded non-custodially: your own wallet grants a per-period Spend Permission, and
+leashd's local agent key can never hold more than one period's allowance.
+
+```bash
+# 1. Generate a local agent key (private key never leaves this machine)
+pnpm --filter @repo/leashd x402 keygen
+
+# 2. Grant a Spend Permission from your own wallet — client-side, no server involved
+#    open the grant page and sign with the owner wallet, save the downloaded JSON:
+open https://leashd.dev/dashboard/rails/x402/grant
+
+# 3. Point leashd at the granted permission
+LEASH_X402_NETWORK=eip155:8453 \
+LEASH_X402_PRIVATE_KEY=0x... \
+LEASH_X402_RPC_URL=https://mainnet.base.org \
+LEASH_X402_FUNDING=base-spend-permission \
+LEASH_X402_PERMISSION_PATH=~/.leashd/x402-permission.json \
+LEASH_X402_OWNER_ADDRESS=0xYourOwnerWallet \
+pnpm --filter @repo/leashd dev
+
+# 4. Check remaining allowance and period end anytime
+pnpm --filter @repo/leashd x402 status
+```
+
+Revoke the grant any time from the same grant page, or directly in the owner wallet. leashd's agent
+key can never pull more than the last granted period.
+
+Gas: a `spend()` call measures roughly 186,880 gas in the contract's own gas snapshot. At the fees
+recorded in `docs/x402-spikes.md` (Step 2, fetched live 2026-09-16) that's about **$0.0027 on Base**
+(0.006 gwei) and about **$0.083 on Ethereum mainnet** (0.185 gwei) — point-in-time estimates, not a
+promise, and Base is the launch rail for a reason.
+
+## Open issues, help wanted
+
+Full list once filed: [issues labelled `help wanted`](https://github.com/brainbytes-dev/leashd/issues?q=is%3Aopen+label%3A%22help+wanted%22).
+
+- **funding: ERC-7715 delegation as a second `FundingSource`** — MetaMask smart accounts, an erc20
+  periodic permission as an alternative to the Base Account Spend Permission.
+- **funding: Kernel signature policy enforcing EIP-3009 typed data on-chain** — a Kernel v3 policy that
+  validates a `transferWithAuthorization` typed-data signature on-chain, capping an x402 payment without
+  the pull-into-agent-key step.
+- **rail: Solana x402** — the x402 `exact` scheme on Solana, non-custodial per-period cap (Spec 2).
 
 ## Contributing
 

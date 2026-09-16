@@ -31,8 +31,9 @@ export default function TermsPage() {
         AI agents.</Strong> It lets you define spending policies (budget caps,
         per-agent and per-period limits, allowed endpoints and mints, time
         windows, kill-switches), enforce those policies when your agents attempt
-        payments over rails you connect (Bitcoin Lightning / L402 / NWC, Cashu
-        ecash), and keep a verifiable audit trail of what each agent did.
+        payments over rails you connect (e.g. Bitcoin Lightning / L402, Cashu
+        ecash, NWC, USDC via x402 on EVM networks), and keep a verifiable audit
+        trail of what each agent did.
       </P>
       <P>
         leashd authorises or denies payment requests according to your policy.
@@ -44,7 +45,8 @@ export default function TermsPage() {
       <UL>
         <LI>
           leashd <Strong>never</Strong> takes custody of your funds, bitcoin,
-          sats, or any balance, and <Strong>never</Strong> holds or
+          sats, USDC via x402 on EVM networks, or any balance, and{" "}
+          <Strong>never</Strong> holds or
           controls your private keys, seed phrases, or equivalent security
           elements.
         </LI>

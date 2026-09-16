@@ -14,7 +14,7 @@ import { BRAND, TAGLINE } from "@/components/marketing/brand";
 export const metadata: Metadata = {
   title: `${BRAND}: Spend governance for AI agents`,
   description:
-    "Non-custodial spend governance for autonomous AI agents. Budget caps, scoped credentials, allowlists, immutable audit, and a graded kill-switch over Bitcoin Lightning and Cashu ecash. Bitcoin-only.",
+    "Non-custodial spend governance for AI agents. Hard budgets, allowlists, audit trail. Lightning, Cashu and x402/USDC, on-chain enforced where the rail allows.",
   openGraph: {
     title: `${BRAND}: ${TAGLINE}`,
     description:
@@ -32,7 +32,7 @@ const JSON_LD = {
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Cross-platform",
   description:
-    "Non-custodial spend-governance layer for autonomous AI agents. A deterministic policy gate (budget caps, allowlists, rate limits, kill-switch, signed audit) between an AI agent and its Bitcoin payment rail. MCP-native, open-source.",
+    "Non-custodial spend-governance layer for autonomous AI agents. A deterministic policy gate (budget caps, allowlists, rate limits, kill-switch, signed audit) between an AI agent and its payment rail (Lightning, Cashu, or x402/USDC). MCP-native, open-source.",
   url: BASE_URL,
   license: "https://www.gnu.org/licenses/agpl-3.0.html",
   codeRepository: "https://github.com/brainbytes-dev/leashd",
