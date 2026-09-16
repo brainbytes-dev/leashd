@@ -6,8 +6,8 @@ import { z } from "zod";
  * policy engine stays exact (no floats).
  */
 
-// Bitcoin-only: sats are the single unit of account.
-export const MoneyUnit = z.enum(["sat"]);
+// Minor units per rail family: sats for Lightning/Cashu, US cents for x402/USDC.
+export const MoneyUnit = z.enum(["sat", "usd_cent"]);
 export type MoneyUnit = z.infer<typeof MoneyUnit>;
 
 export const Amount = z.object({
@@ -16,8 +16,8 @@ export const Amount = z.object({
 });
 export type Amount = z.infer<typeof Amount>;
 
-// Bitcoin-only by design: Lightning (NWC / L402) and Cashu ecash. No EVM/altcoin rails.
-export const Rail = z.enum(["lightning_nwc", "cashu"]);
+// Multi-rail: Lightning (NWC / L402), Cashu ecash, x402 (USDC on EVM).
+export const Rail = z.enum(["lightning_nwc", "cashu", "x402"]);
 export type Rail = z.infer<typeof Rail>;
 
 export const BudgetWindow = z.enum(["task", "hour", "day", "month"]);
