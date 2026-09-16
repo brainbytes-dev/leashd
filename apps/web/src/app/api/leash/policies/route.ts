@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getDb, eq, and, desc, isNull, policies } from "@repo/db";
+import { getDb, eq, and, desc, isNull, policies, railBindings } from "@repo/db";
 import { PolicySpec } from "@repo/leash-core";
 import { err, getSessionUser, isMember } from "@/lib/leash/api";
 import { signSpec } from "@/lib/leash/signing";
+import { x402CapViolations } from "./x402-caps";
 
 export async function GET(request: NextRequest) {
   const user = await getSessionUser(request.headers);
@@ -63,6 +64,14 @@ export async function POST(request: NextRequest) {
 
   // Persist the version inside the spec too — leashd compares spec.version.
   const finalSpec = { ...spec, version };
+
+  const bindings = await db
+    .select({ rail: railBindings.rail, meta: railBindings.meta })
+    .from(railBindings)
+    .where(eq(railBindings.workspaceId, workspaceId));
+  const violations = x402CapViolations(finalSpec, bindings as { rail: string; meta: Record<string, unknown> | null }[]);
+  if (violations.length > 0) return err(400, `Policy exceeds the on-chain x402 allowance: ${violations.join("; ")}`);
+
   const signature = signSpec(finalSpec);
 
   if (prev) {

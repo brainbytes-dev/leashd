@@ -213,7 +213,7 @@ export const railBindings = pgTable(
     workspaceId: uuid("workspace_id")
       .notNull()
       .references(() => workspaces.id, { onDelete: "cascade" }),
-    rail: text("rail").notNull(), // lightning_nwc, cashu (Bitcoin-only)
+    rail: text("rail").notNull(), // lightning_nwc, cashu, x402
     label: text("label").notNull(),
     // Non-secret metadata only (e.g. node alias, mint URL host, last 4 of pubkey).
     meta: jsonb("meta"),

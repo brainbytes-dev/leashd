@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Plus, Zap, Coins, Lock, Pencil, Trash2, Check, X } from "lucide-react";
 import type { Rail } from "@repo/leash-core";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,13 @@ export type RailRow = {
 const RAIL_META: Record<string, { label: string; Icon: typeof Zap }> = {
   lightning_nwc: { label: "Lightning / NWC", Icon: Zap },
   cashu: { label: "Cashu", Icon: Coins },
+  x402: { label: "x402 / USDC", Icon: Coins },
 };
+
+function shortenAddress(address: string) {
+  if (address.length <= 10) return address;
+  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
 
 export function RailsClient({
   workspaceId,
@@ -44,15 +51,25 @@ export function RailsClient({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editLabel, setEditLabel] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [network, setNetwork] = useState("eip155:8453");
+  const [agentAddress, setAgentAddress] = useState("");
+  const [permissionHash, setPermissionHash] = useState("");
+  const [allowanceUsdCent, setAllowanceUsdCent] = useState("");
+  const [periodSeconds, setPeriodSeconds] = useState("");
+  const [end, setEnd] = useState("");
 
   async function add() {
     if (busy || !label.trim()) return;
     setBusy(true);
     setError(null);
+    const meta =
+      rail === "x402"
+        ? { network, agentAddress, permissionHash, allowanceUsdCent, periodSeconds, end }
+        : undefined;
     const res = await fetch("/api/leash/rails", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ workspaceId, rail, label }),
+      body: JSON.stringify({ workspaceId, rail, label, meta }),
     });
     setBusy(false);
     if (!res.ok) {
@@ -60,6 +77,11 @@ export function RailsClient({
       return;
     }
     setLabel("");
+    setAgentAddress("");
+    setPermissionHash("");
+    setAllowanceUsdCent("");
+    setPeriodSeconds("");
+    setEnd("");
     router.refresh();
   }
 
@@ -90,8 +112,8 @@ export function RailsClient({
         <CardContent className="flex items-start gap-3 pt-6">
           <Lock className="mt-0.5 size-4 shrink-0 text-info" aria-hidden />
           <p className="font-sans text-sm text-muted-foreground">
-            Rail bindings store metadata only. Secrets — NWC strings, macaroons,
-            session keys — never leave leashd on your own infrastructure.
+            Rail bindings store metadata only. Secrets (NWC strings, macaroons,
+            agent keys, signed permissions) never leave leashd.
           </p>
         </CardContent>
       </Card>
@@ -127,6 +149,16 @@ export function RailsClient({
                         <div className="truncate font-mono text-sm">{r.label}</div>
                         <div className="font-sans text-xs text-muted-foreground">
                           {meta.label}
+                          {r.rail === "x402" && r.meta && (
+                            <>
+                              {" — "}
+                              {String(r.meta.network ?? "")}
+                              {" · "}
+                              {shortenAddress(String(r.meta.agentAddress ?? ""))}
+                              {" · "}
+                              {`$${(Number(r.meta.allowanceUsdCent) / 100).toFixed(2)} / ${Number(r.meta.periodSeconds) / 3600}h`}
+                            </>
+                          )}
                         </div>
                       </div>
                     )}
@@ -231,8 +263,17 @@ export function RailsClient({
               <SelectContent>
                 <SelectItem value="lightning_nwc">Lightning / NWC</SelectItem>
                 <SelectItem value="cashu">Cashu</SelectItem>
+                <SelectItem value="x402">x402 / USDC</SelectItem>
               </SelectContent>
             </Select>
+            {rail === "x402" && (
+              <Link
+                href="/dashboard/rails/x402/grant"
+                className="font-sans text-xs text-info underline underline-offset-2"
+              >
+                Grant a spend permission
+              </Link>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="rail-label">Label</Label>
@@ -244,6 +285,70 @@ export function RailsClient({
               placeholder="alby-hub-main"
             />
           </div>
+          {rail === "x402" && (
+            <>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="rail-x402-network">Network</Label>
+                <Input
+                  id="rail-x402-network"
+                  className="w-44 font-mono"
+                  value={network}
+                  onChange={(e) => setNetwork(e.target.value)}
+                  placeholder="eip155:8453"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="rail-x402-agent-address">Agent address</Label>
+                <Input
+                  id="rail-x402-agent-address"
+                  className="w-56 font-mono"
+                  value={agentAddress}
+                  onChange={(e) => setAgentAddress(e.target.value)}
+                  placeholder="0x…"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="rail-x402-permission-hash">Permission hash</Label>
+                <Input
+                  id="rail-x402-permission-hash"
+                  className="w-56 font-mono"
+                  value={permissionHash}
+                  onChange={(e) => setPermissionHash(e.target.value)}
+                  placeholder="0x…"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="rail-x402-allowance">Allowance (usd cent)</Label>
+                <Input
+                  id="rail-x402-allowance"
+                  className="w-36 font-mono"
+                  value={allowanceUsdCent}
+                  onChange={(e) => setAllowanceUsdCent(e.target.value)}
+                  placeholder="5000"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="rail-x402-period">Period (seconds)</Label>
+                <Input
+                  id="rail-x402-period"
+                  className="w-36 font-mono"
+                  value={periodSeconds}
+                  onChange={(e) => setPeriodSeconds(e.target.value)}
+                  placeholder="86400"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="rail-x402-end">Expiry</Label>
+                <Input
+                  id="rail-x402-end"
+                  className="w-44 font-mono"
+                  value={end}
+                  onChange={(e) => setEnd(e.target.value)}
+                  placeholder="2026-12-31T00:00:00Z"
+                />
+              </div>
+            </>
+          )}
           <Button className="cursor-pointer" disabled={busy || !label.trim()} onClick={add}>
             <Plus className="size-4" aria-hidden />
             {busy ? "Adding…" : "Add rail"}
