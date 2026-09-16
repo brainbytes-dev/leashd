@@ -29,6 +29,10 @@ function sat(n: number): string {
   return n.toLocaleString("en-US");
 }
 
+function usdCent(n: number): string {
+  return `$${(n / 100).toFixed(2)}`;
+}
+
 const DECISION_STYLE: Record<string, { color: string; label: string }> = {
   allowed: { color: C.green, label: "ALLOW " },
   capped: { color: C.amber, label: "CAPPED" },
@@ -56,18 +60,28 @@ async function main(): Promise<void> {
   const audit = createAuditWriter(store, config);
 
   // A mock Lightning rail for the allowed path (no real settlement in the demo).
-  const mockRail: RailAdapter = {
+  const mockLightningRail: RailAdapter = {
     rail: "lightning_nwc",
     async pay(req) {
       return { ok: true, ref: "3f9a1c8e…preimage", settledAmount: req.amount };
     },
   };
+
+  // A mock x402 rail for USDC/EVM settlement (no real chain in the demo).
+  const mockX402Rail: RailAdapter = {
+    rail: "x402",
+    async pay(req) {
+      return { ok: true, ref: "0xdemo", settledAmount: req.amount };
+    },
+  };
+
   const rails = new Map<PaymentRequest["rail"], RailAdapter>([
-    ["lightning_nwc", mockRail],
+    ["lightning_nwc", mockLightningRail],
+    ["x402", mockX402Rail],
   ]);
 
-  // Mutable so we can flip the kill-switch mid-demo.
-  const policy: PolicySpec = {
+  // Mutable so we can flip the kill-switch mid-demo and switch scenarios.
+  let policy: PolicySpec = {
     version: 1,
     defaultDecision: "deny",
     perTxMax: { unit: "sat", value: 5000 },
@@ -134,6 +148,56 @@ async function main(): Promise<void> {
         : `${decision.reasons[0] ?? ""}`;
 
     const left = `  ${C.cyan}agent${C.reset} → pay ${C.bold}${sat(step.amount).padStart(6)} sat${C.reset} to ${step.to.padEnd(18)}`;
+    line(`${left} ${style.color}${C.bold}${style.label}${C.reset}  ${style.color}${reason}${C.reset}`);
+    await new Promise((r) => setTimeout(r, 450)); // pacing for the recording
+  }
+
+  // Switch to x402 scenario with usd_cent
+  line("");
+  line(
+    `${C.dim}policy:${C.reset} deny by default · per-tx max ${C.bold}${usdCent(5)}${C.reset}`
+  );
+  line(
+    `${C.dim}       allow:${C.reset} api.coingecko.com   ${C.dim}rails:${C.reset} x402`
+  );
+  line("");
+
+  policy = {
+    version: 1,
+    defaultDecision: "deny",
+    perTxMax: { unit: "usd_cent", value: 5 },
+    budgets: [],
+    allow: { domains: ["api.coingecko.com"] },
+    timezone: "UTC",
+    timeWindows: [],
+    killSwitch: false,
+    gradedState: "normal",
+    rails: ["x402"],
+  };
+
+  type X402Step = { domain: string; amount: number; note?: string };
+  const x402Steps: X402Step[] = [
+    { domain: "api.coingecko.com", amount: 1 },
+    { domain: "evil.example", amount: 1, note: "not in allowlist" },
+  ];
+
+  for (const step of x402Steps) {
+    const req: PaymentRequest = {
+      agentId: "demo-agent",
+      rail: "x402",
+      amount: { unit: "usd_cent", value: step.amount },
+      domain: step.domain,
+      ts: Date.now(),
+    };
+
+    const { decision, settled } = await governor.requestPayment(req);
+    const style = DECISION_STYLE[decision.decision] ?? DECISION_STYLE.denied;
+    const reason =
+      decision.decision === "allowed"
+        ? `settled x402 ${C.gray}${settled?.ref ?? ""}${C.reset}`
+        : `${decision.reasons[0] ?? ""}`;
+
+    const left = `  ${C.cyan}agent${C.reset} → pay ${C.bold}${usdCent(step.amount).padStart(5)}${C.reset} to ${step.domain.padEnd(20)}`;
     line(`${left} ${style.color}${C.bold}${style.label}${C.reset}  ${style.color}${reason}${C.reset}`);
     await new Promise((r) => setTimeout(r, 450)); // pacing for the recording
   }
