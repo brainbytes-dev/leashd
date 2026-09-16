@@ -94,6 +94,86 @@ describe("evaluatePolicy", () => {
     expect(evaluatePolicy(spec, req(), zeroState).decision).toBe("denied");
   });
 
+  describe("money-unit mismatch (fail-closed)", () => {
+    const allowEndpoint = { endpoints: ["https://api.example.com/x"] };
+
+    it("denies a usd_cent request when every cap is denominated in sat", () => {
+      // The dashboard lets a single-unit (sat) policy tick both Lightning and
+      // x402; an x402 payment settles in usd_cent, so none of the sat caps can
+      // be compared against it. $4000 must not slip through a 5000-sat policy.
+      const spec: PolicySpec = {
+        ...base,
+        allow: { ...allowEndpoint },
+        rails: ["lightning_nwc", "x402"],
+        perTxMax: { unit: "sat", value: 5000 },
+      };
+      const decision = evaluatePolicy(
+        spec,
+        req({ rail: "x402", amount: { unit: "usd_cent", value: 400_000 } }),
+        zeroState
+      );
+      expect(decision.decision).toBe("denied");
+      expect(decision.reasons.join(" ")).toContain("usd_cent");
+      expect(decision.matched).toBe("moneyUnit");
+    });
+
+    it("denies when only sat budgets and a sat approval threshold are declared", () => {
+      const spec: PolicySpec = {
+        ...base,
+        allow: { ...allowEndpoint },
+        rails: ["lightning_nwc", "x402"],
+        budgets: [{ window: "day", cap: { unit: "sat", value: 100_000 } }],
+        approvalThreshold: { unit: "sat", value: 50_000 },
+      };
+      const decision = evaluatePolicy(
+        spec,
+        req({ rail: "x402", amount: { unit: "usd_cent", value: 400_000 } }),
+        zeroState
+      );
+      expect(decision.decision).toBe("denied");
+      expect(decision.matched).toBe("moneyUnit");
+    });
+
+    it("still evaluates normally when a cap in the request's unit exists", () => {
+      const spec: PolicySpec = {
+        ...base,
+        allow: { ...allowEndpoint },
+        rails: ["lightning_nwc", "x402"],
+        perTxMax: { unit: "sat", value: 5000 },
+        budgets: [{ window: "day", cap: { unit: "usd_cent", value: 1000 } }],
+      };
+      // Within the usd_cent budget -> allowed.
+      expect(
+        evaluatePolicy(
+          spec,
+          req({ rail: "x402", amount: { unit: "usd_cent", value: 250 } }),
+          zeroState
+        ).decision
+      ).toBe("allowed");
+      // Over it -> capped, not denied.
+      expect(
+        evaluatePolicy(
+          spec,
+          req({ rail: "x402", amount: { unit: "usd_cent", value: 400_000 } }),
+          zeroState
+        ).decision
+      ).toBe("capped");
+      // And the sat side is untouched.
+      expect(evaluatePolicy(spec, req(), zeroState).decision).toBe("allowed");
+    });
+
+    it("allows a capless policy regardless of unit (no cap declared, nothing to mismatch)", () => {
+      const spec: PolicySpec = { ...base, allow: { ...allowEndpoint }, rails: ["x402"] };
+      expect(
+        evaluatePolicy(
+          spec,
+          req({ rail: "x402", amount: { unit: "usd_cent", value: 400_000 } }),
+          zeroState
+        ).decision
+      ).toBe("allowed");
+    });
+  });
+
   describe("time windows (timezone-aware)", () => {
     const allowEndpoint = { endpoints: ["https://api.example.com/x"] };
     // A fixed instant: 2026-05-24 22:30 UTC = 2026-05-25 00:30 in Europe/Zurich (+02:00 DST).

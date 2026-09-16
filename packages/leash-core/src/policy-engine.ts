@@ -125,8 +125,36 @@ export function evaluatePolicy(
     };
   }
 
+  // 10. Fail-closed on money-unit mismatch.
+  //
+  // Every cap check above only applies when its unit matches the request's unit
+  // (a sat cap says nothing about a usd_cent amount, and vice versa). A policy
+  // that declares caps exclusively in one unit but permits a rail settling in
+  // another (e.g. all-sat caps with "x402" in `rails`) would therefore reach
+  // this point with ZERO caps applied — an unbounded allow. Deny instead: a cap
+  // that cannot be compared is not a cap that was satisfied.
+  if (declaresAnyCap(spec) && !hasCapInUnit(spec, req.amount.unit)) {
+    return {
+      decision: "denied",
+      reasons: [`no cap denominated in ${req.amount.unit}`],
+      matched: "moneyUnit",
+    };
+  }
+
   reasons.push("within policy");
   return { decision: "allowed", reasons };
+}
+
+/** Does the spec constrain amounts at all (per-tx, budget, or approval)? */
+function declaresAnyCap(spec: PolicySpec): boolean {
+  return Boolean(spec.perTxMax) || spec.budgets.length > 0 || Boolean(spec.approvalThreshold);
+}
+
+/** Is at least one declared cap comparable against `unit`? */
+function hasCapInUnit(spec: PolicySpec, unit: Amount["unit"]): boolean {
+  if (spec.perTxMax?.unit === unit) return true;
+  if (spec.approvalThreshold?.unit === unit) return true;
+  return spec.budgets.some((b) => b.cap.unit === unit);
 }
 
 function sameUnit(a: Amount, b: Amount): boolean {
