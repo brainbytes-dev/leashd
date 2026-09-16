@@ -6,6 +6,7 @@ import type { Governor } from "./governor";
 import type { Store } from "./store";
 import type { LeashConfig } from "./config";
 import { loadAgentPolicy } from "./policy";
+import type { X402Status } from "./rails/x402-status";
 
 /**
  * MCP server exposing the policy-gated payment toolset over stdio.
@@ -69,6 +70,7 @@ export function createMcpServer(deps: {
   governor: Governor;
   store: Store;
   config: LeashConfig;
+  x402Status?: () => Promise<X402Status>;
 }): McpServer {
   const { governor, store, config } = deps;
   const agentId = config.agentId;
@@ -110,7 +112,8 @@ export function createMcpServer(deps: {
     {
       description:
         "Return remaining spend headroom per budget window (task/hour/day/month) " +
-        "for the configured agent, per the current policy.",
+        "for the configured agent, per the current policy. When the x402 rail is " +
+        "configured, also returns the agent key balance and remaining on-chain allowance.",
       inputSchema: budgetShape,
     },
     async () => {
@@ -131,12 +134,14 @@ export function createMcpServer(deps: {
           remaining: Math.max(0, b.cap.value - spent),
         };
       });
+      const x402 = deps.x402Status ? await deps.x402Status() : undefined;
       return jsonContent({
         policyVersion: spec.version,
         killSwitch: spec.killSwitch,
         gradedState: spec.gradedState,
         perTxMax: spec.perTxMax,
         budgets,
+        x402,
       });
     }
   );

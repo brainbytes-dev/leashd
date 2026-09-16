@@ -7,7 +7,12 @@ export interface ChainWriter {
   /** Send a call from the agent key; resolves the tx hash after inclusion. */
   sendCall(to: `0x${string}`, data: `0x${string}`): Promise<`0x${string}`>;
   readCurrentPeriod(p: SignedSpendPermission): Promise<{ start: number; end: number; spend: bigint }>;
-  isApproved(permissionHash: `0x${string}`): Promise<boolean>;
+  /**
+   * The on-chain `isValid` takes the full SpendPermission struct, not a hash
+   * (docs/x402-spikes.md Step 4) — there is no hash-keyed lookup on the
+   * contract, so this takes the whole signed permission.
+   */
+  isApproved(permission: SignedSpendPermission): Promise<boolean>;
 }
 
 /**
@@ -55,7 +60,7 @@ export function createBaseSpendPermissionFunding(opts: {
           return { ok: false, error: `top-up ${amount.value} usd_cent exceeds remaining allowance ${atomicToCents(left)} usd_cent this period` };
         }
         let txHash: `0x${string}` | undefined;
-        if (!(await chain.isApproved(permission.permissionHash))) {
+        if (!(await chain.isApproved(permission))) {
           await chain.sendCall(manager, encodeApprove(permission));
         }
         txHash = await chain.sendCall(manager, encodeSpend(permission, want));
