@@ -15,7 +15,13 @@ export interface SpendPermission {
 
 export interface SignedSpendPermission {
   chainId: number;
-  permissionHash: `0x${string}`;
+  /**
+   * Optional, mirroring the Base Account SDK's own `permissionHash?: string`.
+   * Nothing on-chain is keyed by it (the manager takes the full struct, see the
+   * isValid note below) — it is display/bookkeeping only, so a wallet that omits
+   * it must not block leashd from starting.
+   */
+  permissionHash?: `0x${string}`;
   signature: `0x${string}`;
   permission: SpendPermission;
 }
@@ -56,7 +62,7 @@ const BigIntString = z.union([z.string().regex(/^\d+$/), z.number().int().nonneg
 
 const SignedSpendPermissionJson = z.object({
   chainId: z.number().int().positive(),
-  permissionHash: Hex,
+  permissionHash: Hex.optional(),
   signature: Hex,
   permission: z.object({
     account: Address, spender: Address, token: Address,
@@ -74,7 +80,7 @@ export function parseSignedPermission(json: string): SignedSpendPermission {
   const p = SignedSpendPermissionJson.parse(JSON.parse(json));
   return {
     chainId: p.chainId,
-    permissionHash: p.permissionHash as `0x${string}`,
+    permissionHash: p.permissionHash as `0x${string}` | undefined,
     signature: p.signature as `0x${string}`,
     permission: {
       account: p.permission.account as `0x${string}`,

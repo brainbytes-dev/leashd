@@ -79,4 +79,16 @@ describe("base spend permission funding", () => {
       agentAddress: owner, usdc: { balanceOf: async () => 0n }, chain: chain() }))
       .toThrow(/spender/);
   });
+  it("parses a permission whose wallet omitted the optional permissionHash", () => {
+    const { permissionHash: _omitted, ...withoutHash } = permission;
+    const json = JSON.stringify({ ...withoutHash, permission: { ...permission.permission,
+      allowance: "5000000", salt: "0" } });
+    const parsed = parseSignedPermission(json);
+    expect(parsed.permissionHash).toBeUndefined();
+    expect(parsed.chainId).toBe(8453);
+    // Still fully usable: the on-chain calls take the struct, not the hash.
+    const f = createBaseSpendPermissionFunding({ permission: parsed, agentAddress: agent,
+      usdc: { balanceOf: async () => 0n }, chain: chain() });
+    expect(f).toBeDefined();
+  });
 });

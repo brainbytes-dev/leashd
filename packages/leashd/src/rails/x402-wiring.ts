@@ -70,6 +70,15 @@ export function buildX402Runtime(cfg: X402Config): X402Runtime {
     if (permission.chainId !== net.chain.id) {
       throw new Error(`spend permission is for chainId ${permission.chainId}, configured network is ${cfg.network}`);
     }
+    // A permission granted on the right chain but for the wrong ERC-20 would make every
+    // topUp() move that other token instead of USDC — gas burnt, balance never rising,
+    // payments failing forever. Refuse to start instead. (EVM addresses are
+    // case-insensitive; the grant page may return them EIP-55 checksummed.)
+    if (permission.permission.token.toLowerCase() !== net.usdc.toLowerCase()) {
+      throw new Error(
+        `spend permission is for token ${permission.permission.token}, but ${cfg.network} USDC is ${net.usdc}`
+      );
+    }
     funding = createBaseSpendPermissionFunding({ permission, agentAddress: account.address, usdc, chain: chainWriter });
     allowance = { allowanceUsdCent: atomicToCents(permission.permission.allowance), periodSeconds: permission.permission.period };
     ownerAddress ??= permission.permission.account;
