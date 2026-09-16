@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [master, main, develop]
   pull_request:
-    branches: [main, develop]
+    branches: [master, main, develop]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -51,6 +51,26 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+  integration-sepolia:
+    name: x402 Base Sepolia (live)
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Write permission file
+        if: ${{ secrets.X402_SEPOLIA_PERMISSION_JSON != '' }}
+        run: echo '${{ secrets.X402_SEPOLIA_PERMISSION_JSON }}' > /tmp/perm.json
+      - run: pnpm --filter @repo/leashd test:integration
+        env:
+          X402_SEPOLIA_PRIVATE_KEY: ${{ secrets.X402_SEPOLIA_PRIVATE_KEY }}
+          X402_SEPOLIA_PERMISSION_PATH: /tmp/perm.json
+          X402_SEPOLIA_ENDPOINT: ${{ vars.X402_SEPOLIA_ENDPOINT }}
 
   build:
     name: Build

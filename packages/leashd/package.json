@@ -16,6 +16,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:integration": "vitest run --dir src/integration",
     "x402": "NODE_NO_WARNINGS=1 tsx src/x402-cli.ts"
   },
   "dependencies": {
