@@ -111,8 +111,8 @@ export function amountToAuditColumns(amount: Amount | undefined): {
   currency: string | null;
 } {
   if (!amount) return { amountMsat: null, amountMinor: null, currency: null };
-  // Bitcoin-only: sats map to amount_msat. amount_minor/currency stay dormant.
-  return { amountMsat: amount.value, amountMinor: null, currency: "sat" };
+  if (amount.unit === "sat") return { amountMsat: amount.value, amountMinor: null, currency: "sat" };
+  return { amountMsat: null, amountMinor: amount.value, currency: amount.unit };
 }
 
 /** Reverse mapping for the dashboard audit feed. */
@@ -121,8 +121,8 @@ export function auditColumnsToAmount(row: {
   amountMinor: number | null;
   currency: string | null;
 }): Amount | null {
-  if (row.amountMsat != null)
-    return { unit: "sat", value: row.amountMsat };
+  if (row.amountMsat != null) return { unit: "sat", value: row.amountMsat };
+  if (row.amountMinor != null && row.currency === "usd_cent") return { unit: "usd_cent", value: row.amountMinor };
   return null;
 }
 
