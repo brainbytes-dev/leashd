@@ -99,8 +99,11 @@ export default function PrivacyPage() {
           <Strong>Connection settings for your own payment rails:</Strong> the
           configuration you enter to let leashd enforce policy against your rails,
           for example a Lightning node connection URI / macaroon reference, an
-          NWC connection string, a Cashu mint URL, or a granted x402 Spend
-          Permission for USDC on EVM networks.
+          NWC connection string, or a Cashu mint URL. For x402, we store{" "}
+          <Strong>metadata only</Strong>: the network, the agent address, the
+          permission hash (if your wallet returns one), the allowance amount,
+          the period, and the expiry. The signed Spend Permission itself never
+          leaves your own browser and machine.
           See Sections 4 and 17 for the strict non-custodial boundary.
         </LI>
         <LI>
