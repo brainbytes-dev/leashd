@@ -23,6 +23,7 @@
     "@getalby/sdk": "^3.8.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "@repo/leash-core": "workspace:*",
+    "viem": "^2.56.5",
     "zod": "^4.3.6"
   },
   "devDependencies": {
