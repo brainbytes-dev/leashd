@@ -39,3 +39,4 @@ packages/*/dist/
 
 # local observer lock
 .observer.lock
+.worktrees/
